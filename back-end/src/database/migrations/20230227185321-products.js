@@ -4,22 +4,22 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('products', {
       id: {
-        allowNulll: false,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
       name: {
         type: Sequelize.STRING,
-        allowNulll: false,
+        allowNull: false,
       },
       price: {
         type: Sequelize.DECIMAL(4,2),
-        allowNulll: false,
+        allowNull: false,
       },
       urlImage: {
         type: Sequelize.STRING,
-        allowNulll: false,
+        allowNull: false,
         field: 'url_image',
       },
     })

@@ -4,14 +4,14 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('sales', {
       id: {
-        allowNulll: false,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       userId: {
         type: Sequelize.INTEGER,
-        allowNulll: false,
+        allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         field: 'user_id',
@@ -21,8 +21,8 @@ module.exports = {
         },
       },
       sellerId: {
-        type: Sequelize.STRING,
-        allowNulll: false,
+        type: Sequelize.INTEGER,
+        allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         field: 'seller_id',
@@ -33,27 +33,27 @@ module.exports = {
       },
       totalPrice: {
         type: Sequelize.DECIMAL(9,2),
-        allowNulll: false,
+        allowNull: false,
         field: 'total_price',
       },
       deliveryAddress: {
         type: Sequelize.STRING,
-        allowNulll: false,
+        allowNull: false,
         field: 'delivery_address',
       },
       deliveryNumber: {
         type: Sequelize.STRING,
-        allowNulll: false,
+        allowNull: false,
         field: 'delivery_number',
       },
       saleDate: {
         type: Sequelize.DATE,
-        allowNulll: false,
+        allowNull: false,
         field: 'sale_date',
       },
       status: {
         type: Sequelize.STRING,
-        allowNulll: false,
+        allowNull: false,
       },
     })
   },
