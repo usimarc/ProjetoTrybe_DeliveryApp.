@@ -56,7 +56,7 @@ const register = async ({ name, email, password }) => {
   return {
     name: newUser.dataValues.name,
     email: newUser.dataValues.email,
-    role: newUser.dataValues.role
+    role: newUser.dataValues.role,
   };
 };
 
