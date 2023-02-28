@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { requestLogin } from '../ApiCall/index';
 
 function Login() {
@@ -8,9 +9,10 @@ function Login() {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [err, setErr] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i;
+    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{3})$/i;
     const passwordRegex = /^.{6,}$/;
     const emailTest = emailRegex.test(email);
     const passwordTest = passwordRegex.test(password);
@@ -29,7 +31,7 @@ function Login() {
   const handleBtnOnClick = async () => {
     try {
       await requestLogin('/login', { email, password });
-      push('/register');
+      navigate('/customer/products');
     } catch (error) {
       setErr(error);
     }
@@ -41,7 +43,6 @@ function Login() {
         <div>
           Login
         </div>
-        {/* common_login__input-email */}
         <input
           data-testid="common_login__input-email"
           type="email"
@@ -73,7 +74,11 @@ function Login() {
         </button>
       </div>
       <div>
-        <button type="button" data-testid="common_login__button-register">
+        <button
+          type="button"
+          data-testid="common_login__button-register"
+          onClick={ (() => navigate('/register')) }
+        >
           Ainda não tenho conta
         </button>
       </div>
@@ -82,7 +87,7 @@ function Login() {
           err
           && (
             <p data-testid="common_login__element-invalid-email">
-              { err?.response.request.statusText }
+              { err?.response.data.message }
             </p>)
         }
       </div>
