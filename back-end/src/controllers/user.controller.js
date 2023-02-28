@@ -9,6 +9,16 @@ const login = async (req, res, next) => {
   }
 };
 
+const createUser = async (req, res, next) => {
+  try {
+    const output = await userService.register(req.body);
+    return res.status(201).json(output);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   login,
+  createUser,
 };
