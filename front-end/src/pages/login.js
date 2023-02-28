@@ -29,11 +29,9 @@ function Login() {
   const handleBtnOnClick = async () => {
     try {
       await requestLogin('/login', { email, password });
+      push('/register');
     } catch (error) {
-      if (error) {
-        console.log(error);
-        setErr(error);
-      }
+      setErr(error);
     }
   };
 
