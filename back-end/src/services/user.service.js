@@ -25,6 +25,24 @@ const login = async ({ email, password }) => {
   };
 };
 
+const register = async ({ name, email, password }) => {
+  validations.createUser(name, email, password);
+  const hash = md5(password);
+  const newUser = await User.create({
+    name,
+    email,
+    password: hash,
+    role: 'customer',
+  });
+
+  return {
+    name: newUser.dataValues.name,
+    email: newUser.dataValues.email,
+    role: newUser.dataValues.role,
+  };
+};
+
 module.exports = {
   login,
+  register,
 };
