@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { requestLogin } from '../ApiCall/index';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -6,6 +7,7 @@ function Login() {
   const [disabled, setDisabled] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
     const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i;
@@ -23,6 +25,17 @@ function Login() {
       setDisabled(true);
     }
   }, [isEmailValid, isPasswordValid]);
+
+  const handleBtnOnClick = async () => {
+    try {
+      await requestLogin('/login', { email, password });
+    } catch (error) {
+      if (error) {
+        console.log(error);
+        setErr(error);
+      }
+    }
+  };
 
   return (
     <div>
@@ -56,6 +69,7 @@ function Login() {
           type="button"
           data-testid="common_login__button-login"
           disabled={ disabled }
+          onClick={ handleBtnOnClick }
         >
           LOGIN
         </button>
@@ -66,9 +80,13 @@ function Login() {
         </button>
       </div>
       <div>
-        <p data-testid="common_login__element-invalid-email">
-          Elemento oculto (Mensagens de erro)
-        </p>
+        {
+          err
+          && (
+            <p data-testid="common_login__element-invalid-email">
+              { err?.response.request.statusText }
+            </p>)
+        }
       </div>
     </div>
   );
