@@ -1,5 +1,6 @@
 const md5 = require('md5');
 const { Op } = require('sequelize');
+const { createToken } = require('../auth/token');
 const { User } = require('../database/models');
 const CustomError = require('./error/CustomError');
 const validations = require('./validations');
@@ -28,10 +29,13 @@ const login = async ({ email, password }) => {
     throw new CustomError('NOT_FOUND', 'Invalid email or password');
   }
 
+  const token = await createToken({ email, name: user.dataValues.name });
+
   return {
-    name: user.name,
-    email: user.email,
-    role: user.role,
+    name: user.dataValues.name,
+    email,
+    role: user.dataValues.role,
+    token,
   };
 };
 
