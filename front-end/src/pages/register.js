@@ -1,6 +1,39 @@
 import React from 'react';
 
 function Register() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [disabled, setDisabled] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [err, setErr] = useState('');
+
+  useEffect(() => {
+    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{3})$/i;
+    const passwordRegex = /^.{6,}$/;
+    const emailTest = emailRegex.test(email);
+    const passwordTest = passwordRegex.test(password);
+    setIsEmailValid(emailTest);
+    setIsPasswordValid(passwordTest);
+  }, [email, password]);
+
+  useEffect(() => {
+    if (isEmailValid && isPasswordValid && name) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [isEmailValid, isPasswordValid, name]);
+
+  const handleBtnOnClick = async () => {
+    try {
+      await requestLogin('/register', { name, email, password });
+    } catch (error) {
+      setErr(error);
+    }
+  };
+
   return (
     <div>
       <div>
@@ -9,6 +42,8 @@ function Register() {
       <input
         data-testid="common_register__input-name"
         type="name"
+        placeholder="Digite seu nome"
+        onChange={ (({ target }) => setName(target.value)) }
       />
       <div>
         Email
@@ -16,6 +51,8 @@ function Register() {
       <input
         data-testid="common_register__input-email"
         type="email"
+        placeholder="Digite seu email"
+        onChange={ (({ target }) => setEmail(target.value)) }
       />
       <div>
         Senha
@@ -23,10 +60,14 @@ function Register() {
       <input
         data-testid="common_register__input-password"
         type="password"
+        placeholder="Digite sua senha"
+        onChange={ (({ target }) => setPassword(target.value)) }
       />
       <button
         type="button"
         data-testid="common_register__button-resgister"
+        onClick={ handleBtnOnClick }
+        disabled={ disabled }
       >
         CADASTRAR
 
@@ -34,7 +75,7 @@ function Register() {
       <p
         data-testid="common_login__element-invalid-register"
       >
-        Elemento inválido
+        { err?.response.data.message }
 
       </p>
     </div>
