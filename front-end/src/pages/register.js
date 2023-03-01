@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -7,24 +7,28 @@ function Register() {
   const [disabled, setDisabled] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isNameValid, setIsNameValid] = useState(false);
   const [err, setErr] = useState('');
 
   useEffect(() => {
     const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{3})$/i;
     const passwordRegex = /^.{6,}$/;
+    const twelve = 12;
+    const nameRegex = name.length < twelve;
     const emailTest = emailRegex.test(email);
     const passwordTest = passwordRegex.test(password);
     setIsEmailValid(emailTest);
     setIsPasswordValid(passwordTest);
-  }, [email, password]);
+    setIsNameValid(nameRegex);
+  }, [email, password, name]);
 
   useEffect(() => {
-    if (isEmailValid && isPasswordValid && name) {
+    if (isEmailValid && isPasswordValid && isNameValid) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [isEmailValid, isPasswordValid, name]);
+  }, [isEmailValid, isPasswordValid, isNameValid]);
 
   const handleBtnOnClick = async () => {
     try {
