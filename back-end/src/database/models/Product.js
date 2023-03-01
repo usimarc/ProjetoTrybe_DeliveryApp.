@@ -14,10 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(4,2),
       allowNull: false,
     },
-    email: { 
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     urlImage: { 
       type: DataTypes.STRING,
       allowNull: false,
