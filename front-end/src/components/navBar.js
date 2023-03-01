@@ -1,4 +1,14 @@
-function Navbar() {
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+
+function Navbar({ name }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
+
   return (
     <div>
       <nav>
@@ -23,13 +33,14 @@ function Navbar() {
           data-testid="customer_products__element-navbar-user-full-name"
           type="button"
         >
-          Nome da pessoa
+          { name || 'usuario' }
 
         </button>
         {/* Elemento genérico que seja um item de menu para o logout. */}
         <button
           data-testid="customer_products__element-navbar-link-logout"
           type="button"
+          onClick={ handleLogout }
         >
           Sair
 
@@ -38,5 +49,9 @@ function Navbar() {
     </div>
   );
 }
+
+Navbar.propTypes = {
+  name: PropTypes.string.isRequired,
+};
 
 export default Navbar;
