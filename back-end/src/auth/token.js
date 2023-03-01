@@ -13,7 +13,6 @@ const getSecretKey = async () => {
   }
 };
 
-
 const createToken = async (user) => {
   const secretKey = await getSecretKey();
   const config = {
@@ -22,8 +21,8 @@ const createToken = async (user) => {
   };
 
   return jwt.sign({ data: user }, secretKey, config);
-}
+};
 
 module.exports = {
-  createToken
+  createToken,
 };
