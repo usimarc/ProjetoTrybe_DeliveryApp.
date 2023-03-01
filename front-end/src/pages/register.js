@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { requestLogin } from '../ApiCall';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -7,32 +9,40 @@ function Register() {
   const [disabled, setDisabled] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isNameValid, setIsNameValid] = useState(false);
   const [err, setErr] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{3})$/i;
     const passwordRegex = /^.{6,}$/;
+    const twelve = 12;
+    const nameRegex = name.length >= twelve;
     const emailTest = emailRegex.test(email);
     const passwordTest = passwordRegex.test(password);
     setIsEmailValid(emailTest);
     setIsPasswordValid(passwordTest);
-  }, [email, password]);
+    setIsNameValid(nameRegex);
+  }, [email, password, name]);
 
   useEffect(() => {
-    if (isEmailValid && isPasswordValid && name) {
+    if (isEmailValid && isPasswordValid && isNameValid) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [isEmailValid, isPasswordValid, name]);
+  }, [isEmailValid, isPasswordValid, isNameValid]);
 
   const handleBtnOnClick = async () => {
     try {
       await requestLogin('/register', { name, email, password });
+      navigate('/customer/products');
     } catch (error) {
       setErr(error);
     }
   };
+
+  console.log(err);
 
   return (
     <div>
@@ -65,7 +75,7 @@ function Register() {
       />
       <button
         type="button"
-        data-testid="common_register__button-resgister"
+        data-testid="common_register__button-register"
         onClick={ handleBtnOnClick }
         disabled={ disabled }
       >
@@ -73,10 +83,9 @@ function Register() {
 
       </button>
       <p
-        data-testid="common_login__element-invalid-register"
+        data-testid="common_register__element-invalid_register"
       >
-        { err?.response.data.message }
-
+        { err?.response?.data?.message }
       </p>
     </div>
   );
