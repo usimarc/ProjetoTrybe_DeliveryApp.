@@ -1,56 +1,25 @@
-// 11 - Crie uma tela de produtos do cliente contendo uma barra de navegação - navbar -, que servirá também para demais telas das pessoas usuárias
-// Observações técnicas
-// Se oriente pela seguinte tela do protótipo: Comum / Produtos;
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { requestData } from '../ApiCall';
+import Navbar from '../components/navBar';
 
 function CustomerProducts() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => (
-    setProducts()
-  ));
+    requestData('/products')
+      .then((result) => {
+        setProducts(result);
+      })
+  ), [setProducts]);
 
   return (
-    <div>
-      <nav>
-        {/* Elemento genérico que seja um item de menu para página de produtos; */}
-        <button
-          data-testid="customer_products__element-navbar-link-products"
-          type="button"
-        >
-          PRODUTOS
-
-        </button>
-        {/* Elemento genérico que seja um item de menu para página de pedidos; */}
-        <button
-          data-testid="customer_products__element-navbar-link-orders"
-          type="button"
-        >
-          MEUS PEDIDOS
-
-        </button>
-        {/* Elemento genérico para o nome da pessoa usuária; */}
-        <button
-          data-testid="customer_products__element-navbar-user-full-name"
-          type="button"
-        >
-          Nome da pessoa
-
-        </button>
-        {/* Elemento genérico que seja um item de menu para o logout. */}
-        <button
-          data-testid="customer_products__element-navbar-link-logout"
-          type="button"
-        >
-          Sair
-
-        </button>
-      </nav>
-      <div>
-        { products.map((element) => (
+    <>
+      <>
+        <Navbar />
+        {products.map((element) => (
           <div key={ element.id }>
             <p data-testid={ `customer_products__element-card-price-${element.id}` }>
-              { element.price }
+              {element.price}
             </p>
             <img
               data-testid={ `customer_products__img-card-bg-image-${element.id}` }
@@ -58,7 +27,7 @@ function CustomerProducts() {
               alt={ element.name }
             />
             <p data-testid={ `customer_products__element-card-title-${element.id}` }>
-              { element.name }
+              {element.name}
             </p>
             <button
               data-testid={ `customer_products__button-card-rm-item-${element.id}` }
@@ -75,11 +44,10 @@ function CustomerProducts() {
               type="button"
             >
               +
-
             </button>
           </div>
         ))}
-      </div>
+      </>
       <div>
         <button
           data-testid="customer_products__button-cart"
@@ -91,7 +59,7 @@ function CustomerProducts() {
           </p>
         </button>
       </div>
-    </div>
+    </>
   );
 }
 
