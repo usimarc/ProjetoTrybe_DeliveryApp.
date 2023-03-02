@@ -29,7 +29,7 @@ const verifyToken = async (token) => {
     const secretKey = await getSecretKey();
     return jwt.verify(token, secretKey);
   } catch (error) {
-    throw new CustomError('UNAUTHORIZED', error.message)
+    throw new CustomError('UNAUTHORIZED', error.message);
   }
 };
 
