@@ -29,12 +29,14 @@ const login = async ({ email, password }) => {
     throw new CustomError('NOT_FOUND', 'Invalid email or password');
   }
 
-  const token = await createToken({ email, name: user.dataValues.name });
+  const { password: _, ...userWithoutPassword } = user.dataValues;
+
+  const token = await createToken(userWithoutPassword);
 
   return {
-    name: user.dataValues.name,
-    email,
-    role: user.dataValues.role,
+    name: userWithoutPassword.name,
+    email: userWithoutPassword.email,
+    role: userWithoutPassword.role,
     token,
   };
 };
