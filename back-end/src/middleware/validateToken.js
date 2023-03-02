@@ -9,11 +9,7 @@ module.exports = async (req, _res, next) => {
       throw new CustomError('UNAUTHORIZED', 'Token not found');
     }
 
-    const { error, data } = await verifyToken(token);
-
-    if (error) {
-      throw new CustomError('UNAUTHORIZED', 'Expired or invalid token');
-    }
+    const { data } = await verifyToken(token);
 
     req.user = data;
 
