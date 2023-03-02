@@ -5,15 +5,21 @@ import ProductCard from '../components/products';
 
 function CustomerProducts() {
   const [products, setProducts] = useState([]);
-  const [name, setName] = useState('');
+  const [name, setName] = useState('usuario');
+
+  const setNameFunc = () => {
+    const getName = JSON.parse(localStorage.getItem('user'));
+    if (getName) {
+      setName(getName.name);
+    }
+  };
 
   useEffect(() => {
     requestData('/products')
       .then((result) => {
         setProducts(result);
       });
-    const getName = JSON.parse(localStorage.getItem('user')).name;
-    setName(getName);
+    setNameFunc();
   }, [setProducts]);
 
   return (

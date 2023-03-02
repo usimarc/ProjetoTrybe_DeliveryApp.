@@ -84,13 +84,9 @@ function Login() {
         </button>
       </div>
       <div>
-        {
-          err
-          && (
-            <p data-testid="common_login__element-invalid-email">
-              { err?.response?.data?.message }
-            </p>)
-        }
+        <p data-testid="common_login__element-invalid-email">
+          { err?.response?.data?.message }
+        </p>
       </div>
     </div>
   );

@@ -1,7 +1,15 @@
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
 function ProductCard({ props }) {
   const { id, name, price, urlImage } = props;
+  const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    if (quantity < 0) {
+      setQuantity(0);
+    }
+  }, [quantity]);
 
   return (
     <div key={ id }>
@@ -20,16 +28,21 @@ function ProductCard({ props }) {
       <button
         data-testid={ `customer_products__button-card-rm-item-${id}` }
         type="button"
-      >
+        onClick={ (() => setQuantity(quantity - 1)) }
+       >
         -
 
       </button>
       <input
+        type="number"
         data-testid={ `customer_products__input-card-quantity-${id}` }
+        value={ quantity }
       />
       <button
         data-testid={ `customer_products__button-card-add-item-${id}` }
         type="button"
+        onClick={ (() => setQuantity(quantity + 1)) }
+
       >
         +
       </button>
