@@ -23,6 +23,16 @@ const createToken = async (user) => {
   return jwt.sign({ data: user }, secretKey, config);
 };
 
+const verifyToken = async (token) => {
+  try {
+    const secretKey = await getSecretKey();
+    return jwt.verify(token, secretKey);
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
 module.exports = {
   createToken,
+  verifyToken,
 };
