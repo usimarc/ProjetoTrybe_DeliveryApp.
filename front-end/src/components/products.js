@@ -29,7 +29,7 @@ function ProductCard({ props }) {
         data-testid={ `customer_products__button-card-rm-item-${id}` }
         type="button"
         onClick={ (() => setQuantity(quantity - 1)) }
-      >
+       >
         -
 
       </button>
@@ -42,6 +42,7 @@ function ProductCard({ props }) {
         data-testid={ `customer_products__button-card-add-item-${id}` }
         type="button"
         onClick={ (() => setQuantity(quantity + 1)) }
+
       >
         +
       </button>

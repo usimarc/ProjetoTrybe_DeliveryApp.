@@ -87,7 +87,6 @@ function Login() {
         <p data-testid="common_login__element-invalid-email">
           { err?.response?.data?.message }
         </p>
-
       </div>
     </div>
   );
