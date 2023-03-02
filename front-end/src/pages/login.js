@@ -30,7 +30,8 @@ function Login() {
 
   const handleBtnOnClick = async () => {
     try {
-      await requestLogin('/login', { email, password });
+      const response = await requestLogin('/login', { email, password });
+      localStorage.setItem('user', JSON.stringify(response));
       navigate('/customer/products');
     } catch (error) {
       setErr(error);
@@ -83,13 +84,9 @@ function Login() {
         </button>
       </div>
       <div>
-        {
-          err
-          && (
-            <p data-testid="common_login__element-invalid-email">
-              { err?.response.data.message }
-            </p>)
-        }
+        <p data-testid="common_login__element-invalid-email">
+          { err?.response?.data?.message }
+        </p>
       </div>
     </div>
   );

@@ -35,7 +35,8 @@ function Register() {
 
   const handleBtnOnClick = async () => {
     try {
-      await requestLogin('/register', { name, email, password });
+      const response = await requestLogin('/register', { name, email, password });
+      localStorage.setItem('user', JSON.stringify(response));
       navigate('/customer/products');
     } catch (error) {
       setErr(error);

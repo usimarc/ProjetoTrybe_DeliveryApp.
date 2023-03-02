@@ -8,10 +8,8 @@ function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* A rota padrão (/) deve fazer redirecionamento para rota /login. */}
         <Route exact path="/" element={ <Navigate to="/login" /> } />
         <Route exact path="/login" element={ <Login /> } />
-        {/* incluindo para req07 não quebrou testes 01 a 05 */}
         <Route path="/register" element={ <Register /> } />
         <Route exact path="/customer/products" element={ <CustomerProducts /> } />
       </Routes>
