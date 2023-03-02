@@ -31,10 +31,12 @@ module.exports = (sequelize, DataTypes) => {
     saleDate: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
     },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: 'Pendente',
     },
   },
   {
@@ -45,14 +47,14 @@ module.exports = (sequelize, DataTypes) => {
 
   Sale.associate = ({ User }) => {
     Sale.belongsTo(User, {
-      as: 'users',
+      as: 'usersSales',
       foreignKey: 'userId'
     });
   };
 
   Sale.associate = ({ User }) => {
     Sale.belongsTo(User, {
-      as: 'users',
+      as: 'sellersSale',
       foreignKey: 'sellerId'
     });
   };
