@@ -13,6 +13,7 @@ app.use(express.static('public'));
 
 app.get('/coffee', (_req, res) => res.status(418).end());
 
+app.use('/sales', routes.saleRoute);
 app.use('/products', routes.productRoute);
 app.use(routes.userRoute);
 

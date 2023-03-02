@@ -31,14 +31,14 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = ({ Sale }) => {
     User.hasMany(Sale, {
-      as: 'sales',
+      as: 'salesUser',
       foreignKey: 'userId'
     });
   };
 
   User.associate = ({ Sale }) => {
     User.hasMany(Sale, {
-      as: 'sales',
+      as: 'salesSeller',
       foreignKey: 'sellerId'
     });
   };
