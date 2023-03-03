@@ -1,14 +1,13 @@
 import React from 'react';
-// 1 - Crie uma tela de login que deve ser acessível pelos endpoints / e /login no navegador
-import Router from './pages/router';
-
+import { BrowserRouter } from 'react-router-dom';
 import './App.css';
+import Router from './routes/router';
 
 function App() {
   return (
-    <div className="App">
+    <BrowserRouter>
       <Router />
-    </div>
+    </BrowserRouter>
   );
 }
 
