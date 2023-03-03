@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-function ProductCard({ props }) {
+function ProductCard({ props, totalPrice }) {
   const { id, name, price, urlImage } = props;
   const [quantity, setQuantity] = useState(0);
 
@@ -24,6 +24,7 @@ function ProductCard({ props }) {
       }
       localStorage.setItem('cart', JSON.stringify(updateLocalstorage));
     }
+    totalPrice();
   };
 
   const handlePlusInput = () => {
@@ -40,6 +41,7 @@ function ProductCard({ props }) {
       .filter((element) => element.id !== id);
     updateLocalstorage.push(product);
     localStorage.setItem('cart', JSON.stringify(updateLocalstorage));
+    totalPrice();
   };
 
   return (
