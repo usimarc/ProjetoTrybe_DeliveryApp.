@@ -1,15 +1,46 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function ProductCard({ props }) {
   const { id, name, price, urlImage } = props;
   const [quantity, setQuantity] = useState(0);
 
-  useEffect(() => {
-    if (quantity < 0) {
-      setQuantity(0);
+  const handleMinusInput = () => {
+    if (quantity < 0) setQuantity(0);
+    if (quantity > 0) {
+      setQuantity(quantity - 1);
+      const product = {
+        id,
+        name,
+        price,
+        urlImage,
+        quantity: quantity - 1,
+      };
+      const productInLocalstorage = JSON.parse(localStorage.getItem('cart')) || [];
+      const updateLocalstorage = productInLocalstorage
+        .filter((element) => element.id !== id);
+      if (product.quantity > 0) {
+        updateLocalstorage.push(product);
+      }
+      localStorage.setItem('cart', JSON.stringify(updateLocalstorage));
     }
-  }, [quantity]);
+  };
+
+  const handlePlusInput = () => {
+    setQuantity(quantity + 1);
+    const product = {
+      id,
+      name,
+      price,
+      urlImage,
+      quantity: quantity + 1,
+    };
+    const productInLocalstorage = JSON.parse(localStorage.getItem('cart')) || [];
+    const updateLocalstorage = productInLocalstorage
+      .filter((element) => element.id !== id);
+    updateLocalstorage.push(product);
+    localStorage.setItem('cart', JSON.stringify(updateLocalstorage));
+  };
 
   return (
     <div key={ id }>
@@ -28,21 +59,20 @@ function ProductCard({ props }) {
       <button
         data-testid={ `customer_products__button-card-rm-item-${id}` }
         type="button"
-        onClick={ (() => setQuantity(quantity - 1)) }
+        onClick={ handleMinusInput }
       >
         -
-
       </button>
       <input
         type="number"
         data-testid={ `customer_products__input-card-quantity-${id}` }
         value={ quantity }
+        onChange={ (event) => setQuantity(event.target.value) }
       />
       <button
         data-testid={ `customer_products__button-card-add-item-${id}` }
         type="button"
-        onClick={ (() => setQuantity(quantity + 1)) }
-
+        onClick={ handlePlusInput }
       >
         +
       </button>

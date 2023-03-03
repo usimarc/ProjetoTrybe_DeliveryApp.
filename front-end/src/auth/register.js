@@ -43,8 +43,6 @@ function Register() {
     }
   };
 
-  console.log(err);
-
   return (
     <div>
       <div>
