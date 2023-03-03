@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { requestData } from '../../utils/apiConnection';
 import Navbar from '../components/navBar';
 import ProductCard from '../components/products';
@@ -6,12 +7,21 @@ import ProductCard from '../components/products';
 function CustomerProducts() {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState('usuario');
+  const [totalPrice, setTotalPrice] = useState('0,00');
 
   const setNameFunc = () => {
     const getName = JSON.parse(localStorage.getItem('user'));
     if (getName) {
       setName(getName.name);
     }
+  };
+
+  const attPrice = () => {
+    const local = JSON.parse(localStorage.getItem('cart'));
+    const getPrice = local
+      .reduce((acc, curr) => acc + Number(curr.price) * Number(curr.quantity), 0);
+    const result = `${getPrice.toFixed(2)}`.replace('.', ',');
+    setTotalPrice(result);
   };
 
   useEffect(() => {
@@ -27,18 +37,26 @@ function CustomerProducts() {
       <Navbar name={ name } />
       {
         products.map((element) => (
-          <ProductCard props={ element } key={ element.id } />
+          <ProductCard
+            props={ element }
+            totalPrice={ attPrice }
+            key={ element.id }
+          />
         ))
       }
-      <button
-        data-testid="customer_products__button-cart"
-        type="button"
-      >
-        <p data-testid="customer_products__checkout-bottom-value">
-          Ver Carrinho: R$
+      <Link to="/customer/checkout">
+        <button
+          data-testid="customer_products__button-cart"
+          type="button"
+        >
+          <p data-testid="customer_products__checkout-bottom-value">
+            {' '}
+            { totalPrice }
 
-        </p>
-      </button>
+          </p>
+        </button>
+      </Link>
+
     </>
   );
 }
