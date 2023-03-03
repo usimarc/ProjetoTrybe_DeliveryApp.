@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestLogin } from '../ApiCall';
+import { requestLogin } from '../utils/apiConnection';
 
 function Register() {
   const [email, setEmail] = useState('');

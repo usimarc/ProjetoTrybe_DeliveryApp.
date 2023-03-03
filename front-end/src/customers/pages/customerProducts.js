@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { requestData } from '../ApiCall';
+import { requestData } from '../../utils/apiConnection';
 import Navbar from '../components/navBar';
 import ProductCard from '../components/products';
 
