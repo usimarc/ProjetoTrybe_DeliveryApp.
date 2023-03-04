@@ -1,48 +1,41 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function ProductCard({ props, totalPrice }) {
   const { id, name, price, urlImage } = props;
   const [quantity, setQuantity] = useState(0);
+  const isFirstRender = useRef(true);
 
-  const handleMinusInput = () => {
-    if (quantity < 0) setQuantity(0);
-    if (quantity > 0) {
-      setQuantity(quantity - 1);
-      const product = {
+  useEffect(() => {
+    if (!isFirstRender.current) {
+      const productInLocalstorage = JSON.parse(localStorage.getItem('cart')) || [];
+      const updateLocalstorage = productInLocalstorage
+        .filter((element) => element.id !== id);
+      updateLocalstorage.push({
         id,
         name,
         price,
         urlImage,
-        quantity: quantity - 1,
-      };
-      const productInLocalstorage = JSON.parse(localStorage.getItem('cart')) || [];
-      const updateLocalstorage = productInLocalstorage
-        .filter((element) => element.id !== id);
-      if (product.quantity > 0) {
-        updateLocalstorage.push(product);
-      }
+        quantity,
+      });
       localStorage.setItem('cart', JSON.stringify(updateLocalstorage));
+
+      totalPrice();
+    } else {
+      isFirstRender.current = false;
     }
-    totalPrice();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quantity]);
+
+  const handleMinusInput = () => {
+    if (quantity > 0) {
+      setQuantity(quantity - 1);
+    }
   };
 
-  const handlePlusInput = () => {
-    setQuantity(quantity + 1);
-    const product = {
-      id,
-      name,
-      price,
-      urlImage,
-      quantity: quantity + 1,
-    };
-    const productInLocalstorage = JSON.parse(localStorage.getItem('cart')) || [];
-    const updateLocalstorage = productInLocalstorage
-      .filter((element) => element.id !== id);
-    updateLocalstorage.push(product);
-    localStorage.setItem('cart', JSON.stringify(updateLocalstorage));
-    totalPrice();
-  };
+  const handlePlusInput = () => setQuantity(Number(quantity) + 1);
+
+  const handleInput = ({ target }) => setQuantity(target.value);
 
   return (
     <div key={ id }>
@@ -68,8 +61,9 @@ function ProductCard({ props, totalPrice }) {
       <input
         type="number"
         data-testid={ `customer_products__input-card-quantity-${id}` }
+        min={ 0 }
         value={ quantity }
-        onChange={ (event) => setQuantity(event.target.value) }
+        onChange={ handleInput }
       />
       <button
         data-testid={ `customer_products__button-card-add-item-${id}` }
