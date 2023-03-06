@@ -7,65 +7,55 @@ import Navbar from '../components/navBar';
 function CustomerCheckout() {
   const [cart, setCart] = useState();
   const [quantity, setQuantity] = useState();
-
-  // A quantidade de itens no checkout deve corresponder à quantidade de itens no recorte aleatório de produtos utilizados no teste;
-  //   ┌───────────┬───────────────────────────┬──────────┬───────────┬──────────┐
-  //   │ productId │           name            │ quantity │ unitPrice │ subTotal │
-  //   ├───────────┼───────────────────────────┼──────────┼───────────┼──────────┤
-  //   │     2     │     'Heineken 600ml'      │    4     │  '7,50'   │ '30,00'  │
-  //   │     3     │ 'Antarctica Pilsen 300ml' │    1     │  '2,49'   │  '2,49'  │
-  //   │     5     │       'Skol 269ml'        │    2     │  '2,19'   │  '4,38'  │
-  //   │     6     │ 'Skol Beats Senses 313ml' │    2     │  '4,49'   │  '8,98'  │
-  //   │    11     │   'Stella Artois 275ml'   │    1     │  '3,49'   │  '3,49'  │
-  //   └───────────┴───────────────────────────┴──────────┴───────────┴──────────┘
+  const [name, setName] = useState('usuario');
 
   function getCartItems() {
     const local = JSON.parse(localStorage.getItem('cart'));
     const getCart = local.filter((element) => element.quantity > 0);
     setCart(getCart);
-
-    const result = cart
-      .reduce((acc, curr) => acc + (Number(curr.price) * Number(curr.quantity)), 0);
-    setQuantity(result.toFixed(2).replace('.', ','));
   }
 
-  //   const attPrice = () => {
-  //     const local = JSON.parse(localStorage.getItem('cart'));
-  //     const getPrice = local
-  //       .reduce((acc, curr) => acc + Number(curr.price) * Number(curr.quantity), 0);
-  //     const result = `${getPrice.toFixed(2)}`.replace('.', ',');
-  //     setTotalPrice(result);
-  //     if (Number(getPrice) > 0) setDisabledBtn(false);
-  //   };
+  function setNameFunc() {
+    const getName = JSON.parse(localStorage.getItem('user'));
+    if (getName) {
+      setName(getName.name);
+    }
+  }
+
+  useEffect(() => {
+    if (cart) {
+      const result = cart
+        .reduce((acc, curr) => acc + (Number(curr.price) * Number(curr.quantity)), 0);
+      setQuantity(result.toFixed(2).replace('.', ','));
+    }
+    setNameFunc();
+  }, [cart]);
 
   useEffect(() => {
     getCartItems();
   }, []);
 
+  // refatorar pouco cabecalho da tabela
+  const items = [
+    'Item',
+    'Descrição',
+    'Quantidade',
+    'Valor Unitário',
+    'Sub-total',
+    'Remover Item',
+  ];
+
   return (
     <div>
-      <Navbar />
+      <Navbar name={ name } />
       <div>
         Finalizar Pedido
         <table>
           <thead>
             <tr>
-              Item
-            </tr>
-            <tr>
-              Descrição
-            </tr>
-            <tr>
-              Quantidade
-            </tr>
-            <tr>
-              Valor Unitário
-            </tr>
-            <tr>
-              Sub-total
-            </tr>
-            <tr>
-              Remover Item
+              {items.map((element, index) => (
+                <th key={ index }>{element}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
