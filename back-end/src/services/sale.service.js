@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { Sale, SaleProduct } = require('../database/models');
+const { Sale, SaleProduct, Product, User } = require('../database/models');
 const CustomError = require('./error/CustomError');
 const config = require('../database/config/config');
 
@@ -32,6 +32,48 @@ const saveNewSale = async (userId, sale) => {
   }
 };
 
+const mapProduct = (product) => ({
+  id: product.id,
+  name: product.name,
+  price: product.price,
+  quantity: product.SaleProduct.quantity,
+  urlImage: product.urlImage,
+});
+
+const objectMapping = (sales) => sales.map((order) => ({
+    id: order.id,
+    totalPrice: order.totalPrice,
+    deliveryAddress: order.deliveryAddress,
+    deliveryNumber: order.deliveryNumber,
+    saleDate: order.saleDate,
+    status: order.status,
+    sellerName: order.sellersSale.name,
+    sellerEmail: order.sellersSale.email,
+    products: order.products.map((product) => mapProduct(product)),
+  }));
+
+const getAllSalesByUser = async (userId) => {
+  const sales = await Sale.findAll({
+    where: { userId },
+    attributes: { exclude: ['userId', 'sellerId'] },
+    include: [
+      {
+        model: Product,
+        as: 'products',
+        through: { attributes: ['quantity'] },
+      },
+      {
+        model: User,
+        as: 'sellersSale',
+        attributes: { exclude: ['password'] },
+      },
+    ],
+  });
+
+  return objectMapping(sales);
+};
+
 module.exports = {
   saveNewSale,
+  getAllSalesByUser,
 };
