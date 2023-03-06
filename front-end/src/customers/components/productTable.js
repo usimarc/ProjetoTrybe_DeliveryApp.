@@ -1,6 +1,7 @@
+/* eslint-disable react/forbid-prop-types */
 import PropTypes from 'prop-types';
 
-function ProductTable({ product, index, quantity }) {
+function ProductTable({ product, index, cart, setCart }) {
   const items = [
     'Item',
     'Descrição',
@@ -10,9 +11,15 @@ function ProductTable({ product, index, quantity }) {
     'Remover Item',
   ];
 
+  const handleRemoveButton = (event) => {
+    event.preventDefault();
+    const productId = Number(event.target.name);
+    const newCart = cart.filter((element) => element.id !== productId);
+    setCart([...newCart]);
+  };
+
   return (
     <div>
-      Finalizar Pedido
       <table>
         <thead>
           <tr>
@@ -49,40 +56,35 @@ function ProductTable({ product, index, quantity }) {
                 `customer_checkout__element-order-table-unit-price-${index}`
               }
             >
-              {product.price}
+              {product.price.replace('.', ',')}
             </th>
             <th
               data-testid={
                 `customer_checkout__element-order-table-sub-total-${index}`
               }
             >
-              {(product.price * product.quantity)}
+              {`${(product.price * product.quantity).toFixed(2)}`.replace('.', ',')}
             </th>
             <button
               type="button"
+              name={ product.id }
               data-testid={ `customer_checkout__element-order-table-remove-${index}` }
+              onClick={ handleRemoveButton }
             >
               Remover
             </button>
           </tr>
         </tbody>
       </table>
-      <div>
-        <span>
-          Total: R$
-        </span>
-        <span data-testid="customer_checkout__element-order-total-price">
-          {quantity}
-        </span>
-      </div>
     </div>
   );
 }
 
 ProductTable.propTypes = {
-  name: PropTypes.number,
-  quantity: PropTypes.number,
-  price: PropTypes.number,
-}.isRequired;
+  product: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  cart: PropTypes.array.isRequired,
+  setCart: PropTypes.func.isRequired,
+};
 
 export default ProductTable;
