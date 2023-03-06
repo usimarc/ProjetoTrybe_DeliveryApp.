@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import CustomerProducts from '../customers/pages/customerProducts';
 import Login from '../auth/login';
 import Register from '../auth/register';
+import CustomerCheckout from '../customers/pages/customerCheckout';
 
 function Router() {
   return (
@@ -10,6 +11,7 @@ function Router() {
       <Route exact path="/login" element={ <Login /> } />
       <Route exact path="/register" element={ <Register /> } />
       <Route exact path="/customer/products" element={ <CustomerProducts /> } />
+      <Route path="/customer/checkout" element={ <CustomerCheckout /> } />
     </Routes>
   );
 }
