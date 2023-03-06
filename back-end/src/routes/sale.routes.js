@@ -4,6 +4,7 @@ const validateToken = require('../middleware/validateToken');
 
 const router = Router();
 
+router.get('/', validateToken, saleController.getAllSalesByUser);
 router.post('/', validateToken, saleController.create);
 
 module.exports = router;
