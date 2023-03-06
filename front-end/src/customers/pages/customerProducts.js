@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { requestData } from '../../utils/apiConnection';
 import Navbar from '../components/navBar';
@@ -48,30 +47,19 @@ function CustomerProducts() {
           />
         ))
       }
-      {/* <Link to="/customer/checkout"> */}
-      {/* <button
-          type="button"
-          data-testid="common_login__button-register"
-          onClick={ () => navigate('/register') }
-        >
-          Ainda não tenho conta
-        </button> */}
       <button
         data-testid="customer_products__button-cart"
         type="button"
         disabled={ disabledBtn }
         onClick={ () => navigate('/customer/checkout') }
       >
-        Ver Carrrinho: R$
-        <button
-          type="button"
-          disabled={ disabledBtn }
-          data-testid="customer_products__checkout-bottom-value"
-        >
+        <span>
+          Ver Carrrinho: R$
+        </span>
+        <span data-testid="customer_products__checkout-bottom-value">
           { totalPrice }
-        </button>
+        </span>
       </button>
-      {/* </Link> */}
     </>
   );
 }
