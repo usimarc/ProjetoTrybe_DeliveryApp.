@@ -1,21 +1,25 @@
-// 17 - Crie uma tela de checkout do cliente com elementos com os data-testids disponíveis no protótipo
-// Observações técnicas
-// Se oriente pela seguinte tela do protótipo: Comum / Checkout;
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ProductTable from '../components/productTable';
 import Navbar from '../components/navBar';
 
 function CustomerCheckout() {
-  const [cart, setCart] = useState();
-  const [quantity, setQuantity] = useState();
   const [name, setName] = useState('usuario');
+  const [cart, setCart] = useState([]);
+  const [quantity, setQuantity] = useState(0);
+  const navigate = useNavigate();
 
   function getCartItems() {
-    const local = JSON.parse(localStorage.getItem('cart'));
+    const local = JSON.parse(localStorage.getItem('cart')) || [];
     const getCart = local.filter((element) => element.quantity > 0);
     setCart(getCart);
-  }
 
-  function setNameFunc() {
+    if (local) {
+      const result = local
+        .reduce((acc, curr) => acc + (Number(curr.price) * Number(curr.quantity)), 0);
+      setQuantity(result.toFixed(2).replace('.', ','));
+    }
+
     const getName = JSON.parse(localStorage.getItem('user'));
     if (getName) {
       setName(getName.name);
@@ -23,98 +27,38 @@ function CustomerCheckout() {
   }
 
   useEffect(() => {
-    if (cart) {
-      const result = cart
-        .reduce((acc, curr) => acc + (Number(curr.price) * Number(curr.quantity)), 0);
-      setQuantity(result.toFixed(2).replace('.', ','));
-    }
-    setNameFunc();
-  }, [cart]);
-
-  useEffect(() => {
     getCartItems();
   }, []);
 
-  // refatorar pouco cabecalho da tabela
-  const items = [
-    'Item',
-    'Descrição',
-    'Quantidade',
-    'Valor Unitário',
-    'Sub-total',
-    'Remover Item',
-  ];
+  const handleInput = ({ target }) => setQuantity(target.value);
+
+  const handleButton = () => {
+    setOrder([
+      { quantity: 10, productId: 2 },
+      { quantity: 50, productId: 7 },
+    ]);
+    requestLogin('/sales', {
+      sellerId, totalPrice, deliveryAddress, deliveryNumber, order,
+    })
+      .then((response) => {
+        navigate(`/customer/orders/${response}`);
+      });
+  };
 
   return (
-    <div>
-      <Navbar name={ name } />
+    <>
       <div>
-        Finalizar Pedido
-        <table>
-          <thead>
-            <tr>
-              {items.map((element, index) => (
-                <th key={ index }>{element}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {/* Aqui, a referência de identificação dos campos das linhas da tabela deve ser o índice (index) da matriz (array) dos produtos no carrinho de compras. Por exemplo:
-                element-order-table-name-0; element-order-table-name-1; ...; element-order-table-name-x.
-                */}
-            { cart.map((element, index) => (
-              // customer_checkout__element-order-table-item-number-<index>
-              <tr key={ index }>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-item-number-${index}`
-                  }
-                >
-                  {index + 1}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-name-${index}`
-                  }
-                >
-                  {element.name}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-quantity-${index}`
-                  }
-                >
-                  {element.quantity}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-unit-price-${index}`
-                  }
-                >
-                  {element.price}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-sub-total-${index}`
-                  }
-                >
-                  {(element.price * element.quantity)}
-                </th>
-                <th>
-                  <button
-                    data-testid={
-                      `customer_checkout__element-order-table-remove-${index}`
-                    }
-                    type="button"
-                  >
-                    Remover
-                  </button>
-                </th>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {/* customer_checkout__element-order-total-price */}
+        <Navbar name={ name } />
+        {
+          cart.map((element, index) => (
+            <ProductTable
+              product={ element }
+              index={ index }
+              key={ element.id }
+            />
+          ))
+        }
+
         <div>
           <span>
             Total: R$
@@ -124,24 +68,31 @@ function CustomerCheckout() {
           </span>
         </div>
       </div>
-      {/* customer_checkout__select-seller */}
       <div>
         P. Vendedora Responsável:
         <select data-testid="customer_checkout__select-seller">
           <option>Fulana Pereira</option>
         </select>
         Endereço
-        <input data-testid="customer_checkout__input-address" />
+        <input
+          data-testid="customer_checkout__input-address"
+          onChange={ handleInput }
+        />
         Número
-        <input data-testid="customer_checkout__input-address-number" />
+        <input
+          data-testid="customer_checkout__input-address-number"
+          onChange={ handleInput }
+        />
         <button
           type="button"
           data-testid="customer_checkout__button-submit-order"
+          onClick={ handleButton }
         >
           FINALIZAR PEDIDO
         </button>
       </div>
-    </div>
+    </>
+
   );
 }
 
