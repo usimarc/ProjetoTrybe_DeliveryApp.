@@ -1,147 +1,120 @@
-// 17 - Crie uma tela de checkout do cliente com elementos com os data-testids disponíveis no protótipo
-// Observações técnicas
-// Se oriente pela seguinte tela do protótipo: Comum / Checkout;
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ProductTable from '../components/productTable';
 import Navbar from '../components/navBar';
+import { requestLogin } from '../../utils/apiConnection';
 
 function CustomerCheckout() {
-  const [cart, setCart] = useState();
-  const [quantity, setQuantity] = useState();
   const [name, setName] = useState('usuario');
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [sellerName, setSellerName] = useState('Fulana Pereira');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [deliveryNumber, setDeliveryNumber] = useState('');
+  const navigate = useNavigate();
 
-  function getCartItems() {
-    const local = JSON.parse(localStorage.getItem('cart'));
-    const getCart = local.filter((element) => element.quantity > 0);
-    setCart(getCart);
+  function calculateTotalPrice(cart) {
+    return cart.reduce(
+      (acc, curr) => acc + Number(curr.price) * Number(curr.quantity),
+      0,
+    );
   }
 
-  function setNameFunc() {
+  useEffect(() => {
+    const local = JSON.parse(localStorage.getItem('cart')) || [];
+    const cart = local.filter((element) => element.quantity > 0);
+    setCartItems(cart);
+    setTotalPrice(calculateTotalPrice(cart));
+
     const getName = JSON.parse(localStorage.getItem('user'));
     if (getName) {
       setName(getName.name);
     }
-  }
-
-  useEffect(() => {
-    if (cart) {
-      const result = cart
-        .reduce((acc, curr) => acc + (Number(curr.price) * Number(curr.quantity)), 0);
-      setQuantity(result.toFixed(2).replace('.', ','));
-    }
-    setNameFunc();
-  }, [cart]);
-
-  useEffect(() => {
-    getCartItems();
   }, []);
 
-  // refatorar pouco cabecalho da tabela
-  const items = [
-    'Item',
-    'Descrição',
-    'Quantidade',
-    'Valor Unitário',
-    'Sub-total',
-    'Remover Item',
-  ];
+  useEffect(() => {
+    setTotalPrice(calculateTotalPrice(cartItems));
+  }, [cartItems]);
+
+  function handleSellerNameChange({ target }) {
+    setSellerName(target.value);
+  }
+
+  function handleDeliveryAddressChange({ target }) {
+    setDeliveryAddress(target.value);
+  }
+
+  function handleDeliveryNumberChange({ target }) {
+    setDeliveryNumber(target.value);
+  }
+
+  function handleButton() {
+    const order = cartItems
+      .map((item) => ({ productId: item.id, quantity: item.quantity }));
+
+    requestLogin('/sales', {
+      sellerName,
+      totalPrice,
+      deliveryAddress,
+      deliveryNumber,
+      order,
+    })
+      .then((response) => {
+        navigate(`/customer/orders/${response}`);
+      });
+  }
 
   return (
-    <div>
-      <Navbar name={ name } />
+    <>
       <div>
-        Finalizar Pedido
-        <table>
-          <thead>
-            <tr>
-              {items.map((element, index) => (
-                <th key={ index }>{element}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {/* Aqui, a referência de identificação dos campos das linhas da tabela deve ser o índice (index) da matriz (array) dos produtos no carrinho de compras. Por exemplo:
-                element-order-table-name-0; element-order-table-name-1; ...; element-order-table-name-x.
-                */}
-            { cart.map((element, index) => (
-              // customer_checkout__element-order-table-item-number-<index>
-              <tr key={ index }>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-item-number-${index}`
-                  }
-                >
-                  {index + 1}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-name-${index}`
-                  }
-                >
-                  {element.name}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-quantity-${index}`
-                  }
-                >
-                  {element.quantity}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-unit-price-${index}`
-                  }
-                >
-                  {element.price}
-                </th>
-                <th
-                  data-testid={
-                    `customer_checkout__element-order-table-sub-total-${index}`
-                  }
-                >
-                  {(element.price * element.quantity)}
-                </th>
-                <th>
-                  <button
-                    data-testid={
-                      `customer_checkout__element-order-table-remove-${index}`
-                    }
-                    type="button"
-                  >
-                    Remover
-                  </button>
-                </th>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {/* customer_checkout__element-order-total-price */}
+        <Navbar name={ name } />
+        {cartItems.map((item, index) => (
+          <ProductTable
+            product={ item }
+            index={ index }
+            key={ item.id }
+            cart={ cartItems }
+            setCart={ setCartItems }
+          />
+        ))}
         <div>
-          <span>
-            Total: R$
-          </span>
-          <span data-testid="customer_checkout__element-order-total-price">
-            {quantity}
+          <span>Total: R$</span>
+          <span
+            data-testid="customer_checkout__element-order-total-price"
+          >
+            {totalPrice.toFixed(2).replace('.', ',')}
+
           </span>
         </div>
       </div>
-      {/* customer_checkout__select-seller */}
       <div>
         P. Vendedora Responsável:
-        <select data-testid="customer_checkout__select-seller">
+        <select
+          data-testid="customer_checkout__select-seller"
+          onChange={ handleSellerNameChange }
+        >
           <option>Fulana Pereira</option>
         </select>
+
         Endereço
-        <input data-testid="customer_checkout__input-address" />
+        <input
+          data-testid="customer_checkout__input-address"
+          onChange={ handleDeliveryAddressChange }
+        />
         Número
-        <input data-testid="customer_checkout__input-address-number" />
+        <input
+          data-testid="customer_checkout__input-address-number"
+          onChange={ handleDeliveryNumberChange }
+        />
         <button
           type="button"
           data-testid="customer_checkout__button-submit-order"
+          onClick={ handleButton }
         >
           FINALIZAR PEDIDO
         </button>
       </div>
-    </div>
+    </>
   );
 }
 
