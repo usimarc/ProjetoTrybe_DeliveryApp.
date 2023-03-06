@@ -18,6 +18,17 @@ const findUserByEmailOrName = async (email, name) => {
   return user;
 };
 
+const handleToken = async (userWithoutPassword) => {
+  const token = await createToken(userWithoutPassword);
+
+  return {
+    name: userWithoutPassword.name,
+    email: userWithoutPassword.email,
+    role: userWithoutPassword.role,
+    token,
+  };
+};
+
 const login = async ({ email, password }) => {
   validations.login(email, password);
 
@@ -31,14 +42,7 @@ const login = async ({ email, password }) => {
 
   const { password: _, ...userWithoutPassword } = user.dataValues;
 
-  const token = await createToken(userWithoutPassword);
-
-  return {
-    name: userWithoutPassword.name,
-    email: userWithoutPassword.email,
-    role: userWithoutPassword.role,
-    token,
-  };
+  return handleToken(userWithoutPassword);
 };
 
 const register = async ({ name, email, password }) => {
@@ -59,16 +63,9 @@ const register = async ({ name, email, password }) => {
     role: 'customer',
   });
 
-  const { password: _,  ...userWithoutPassword} = newUser.dataValues;
+  const { password: _, ...userWithoutPassword } = newUser.dataValues;
 
-  const token = await createToken(userWithoutPassword);
-
-  return {
-    name: userWithoutPassword.name,
-    email: userWithoutPassword.email,
-    role: userWithoutPassword.role,
-    token,
-  };
+  return handleToken(userWithoutPassword);
 };
 
 module.exports = {

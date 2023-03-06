@@ -9,6 +9,16 @@ const create = async (req, res, next) => {
   }
 };
 
+const getAllSalesByUser = async (req, res, next) => {
+  try {
+    const output = await saleService.getAllSalesByUser(req.user.id);
+    return res.status(200).json(output);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   create,
+  getAllSalesByUser,
 };
