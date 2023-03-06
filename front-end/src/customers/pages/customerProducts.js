@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { requestData } from '../../utils/apiConnection';
 import Navbar from '../components/navBar';
 import ProductCard from '../components/products';
@@ -9,6 +10,7 @@ function CustomerProducts() {
   const [name, setName] = useState('usuario');
   const [totalPrice, setTotalPrice] = useState('0,00');
   const [disabledBtn, setDisabledBtn] = useState(true);
+  const navigate = useNavigate();
 
   const setNameFunc = () => {
     const getName = JSON.parse(localStorage.getItem('user'));
@@ -46,22 +48,30 @@ function CustomerProducts() {
           />
         ))
       }
-      <Link to="/customer/checkout">
+      {/* <Link to="/customer/checkout"> */}
+      {/* <button
+          type="button"
+          data-testid="common_login__button-register"
+          onClick={ () => navigate('/register') }
+        >
+          Ainda não tenho conta
+        </button> */}
+      <button
+        data-testid="customer_products__button-cart"
+        type="button"
+        disabled={ disabledBtn }
+        onClick={ () => navigate('/customer/checkout') }
+      >
+        Ver Carrrinho: R$
         <button
-          data-testid="customer_products__button-cart"
           type="button"
           disabled={ disabledBtn }
+          data-testid="customer_products__checkout-bottom-value"
         >
-
-          <button
-            type="button"
-            disabled={ disabledBtn }
-            data-testid="customer_products__checkout-bottom-value"
-          >
-            { totalPrice }
-          </button>
+          { totalPrice }
         </button>
-      </Link>
+      </button>
+      {/* </Link> */}
     </>
   );
 }
