@@ -6,20 +6,31 @@ const config = require('../database/config/config');
 const env = process.env.NODE_ENV || 'development';
 const sequelize = new Sequelize(config[env]);
 
+const findSeller = async (sellerName) => {
+  const seller = await User.findOne({
+    where: { name: sellerName },
+  });
+
+  if (!seller) {
+    throw new CustomError('NOT_FOUND', 'Seller not exixts');
+  }
+
+  return seller.id;
+};
+
 const saveNewSale = async (userId, sale) => {
+  const sellerId = await findSeller(sale.sellerName);
+
   try {
-    const { order: _, ...saleWithoutOrder } = sale;
+    const { totalPrice, deliveryAddress, deliveryNumber } = sale;
 
     const saleId = await sequelize.transaction(async (t) => {
-      const { dataValues: { id } } = await Sale.create({
-        userId,
-        ...saleWithoutOrder,
-      }, { transaction: t });
+      const { dataValues: { id } } = await Sale.create(
+        { userId, sellerId, totalPrice, deliveryAddress, deliveryNumber },
+        { transaction: t },
+      );
 
-      const items = sale.order.map((item) => ({
-        saleId: id,
-        ...item,
-      }));
+      const items = sale.order.map((item) => ({ saleId: id, ...item }));
   
       await SaleProduct.bulkCreate(items, { transaction: t });
   
