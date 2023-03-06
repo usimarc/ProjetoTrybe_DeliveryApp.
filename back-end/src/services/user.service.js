@@ -59,10 +59,15 @@ const register = async ({ name, email, password }) => {
     role: 'customer',
   });
 
+  const { password: _,  ...userWithoutPassword} = newUser.dataValues;
+
+  const token = await createToken(userWithoutPassword);
+
   return {
-    name: newUser.dataValues.name,
-    email: newUser.dataValues.email,
-    role: newUser.dataValues.role,
+    name: userWithoutPassword.name,
+    email: userWithoutPassword.email,
+    role: userWithoutPassword.role,
+    token,
   };
 };
 
