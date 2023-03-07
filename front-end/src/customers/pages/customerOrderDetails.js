@@ -1,3 +1,11 @@
+// 06customer_order_details.test
+// Todos os testes desse arquivo:
+
+// Vão utilizar uma amostragem de produtos do banco de dados (impresso na tela durante o teste);
+// Vão fazer login com o cliente "Zé Birita";
+// Vão gerar um novo pedido com o preço total presumido e dados aleatórios para utilização nos testes (impresso na tela durante o teste);
+// Vão fazer o checkout desse novo pedido, o que deve redirecionar para tela de detalhes daquele pedido;
+// O endereço da página deve ser localhost:3000/customer/orders/<idVenda>.
 import React, { useEffect, useState } from 'react';
 // https://javascript.plainenglish.io/react-router-how-to-use-the-useparams-hook-321a6461732
 import { useParams } from 'react-router-dom';
@@ -25,22 +33,32 @@ function CustomerOrderDetails() {
     }
   };
 
+  function correctDate(e) {
+    const entryDate = new Date(e);
+    const day = entryDate.getDate().toString().padStart(2, '0');
+    const month = (entryDate.getMonth() + 1).toString().padStart(2, '0');
+    const year = entryDate.getFullYear().toString().substring(2);
+    return `${day}/${month}/${year}`;
+  }
+
   useEffect(() => {
     const getSale = async () => {
-      const { data } = await requestData(`/sales/${id}`);
-      const cartMAP = data.products.map(({ name, price, SaleProduct }) => ({
+      const result = await requestData(`/sales/${id}`);
+      console.log(result);
+      const cartMAP = result.data.products.map(({ name, price, SaleProduct }) => ({
         name, price, quantity: SaleProduct.quantity }));
       setCart(cartMAP);
       setTotalPrice(data.totalPrice);
-      // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate
-      // var today = new Date();
-      // var day = today.getUTCDate();
-      const day = new Date(data.saleDate).getUTCDate();
-      const month = new Date(data.saleDate).getUTCMonth();
-      const year = new Date(data.saleDate).getFullYear();
-      const noMagic = 9;
-      setDate(`${day}/${month + 1 < noMagic ? `0${month + 1}` : month + 1}/${year}`);
+    //   // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate
+    //   // var today = new Date();
+    //   // var day = today.getUTCDate();
+    //   const day = new Date(data.saleDate).getUTCDate();
+    //   const month = new Date(data.saleDate).getUTCMonth();
+    //   const year = new Date(data.saleDate).getFullYear();
+    //   const noMagic = 9;
+    //   setDate(`${day}/${month + 1 < noMagic ? `0${month + 1}` : month + 1}/${year}`);
     };
+    setDate(correctDate());
     getSale();
     setNameFunc();
   }, []);
