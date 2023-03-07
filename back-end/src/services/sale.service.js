@@ -52,7 +52,6 @@ const updateSale = async (sale) => {
   }
 };
 
-
 const mapProduct = (product) => ({
   id: product.id,
   name: product.name,
@@ -94,8 +93,30 @@ const getAllSalesByUser = async (userId) => {
   return objectMapping(sales);
 };
 
+const getSaleById = async (id) => {
+  const saleById = await Sale.findAll({
+    where: { id },
+    include: [
+      {
+        model: Product,
+        as: 'products',
+        through: { attributes: ['quantity'] },
+      },
+      {
+        model: User,
+        as: 'sellersSale',
+        attributes: { exclude: ['password'] },
+      },
+    ],
+  });
+  if (!saleById) throw new CustomError('NOT_FOUND', 'Sale not found');
+  const result = objectMapping(saleById);
+  return { ...result[0] };
+};
+
 module.exports = {
   saveNewSale,
   getAllSalesByUser,
   updateSale,
+  getSaleById,
 };

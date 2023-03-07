@@ -4,7 +4,7 @@ import Login from '../auth/login';
 import Register from '../auth/register';
 import CustomerCheckout from '../customers/pages/customerCheckout';
 import CustomerOrders from '../customers/pages/CustomerOrders';
-import Teste from '../teste/teste';
+import CustomerOrderDetails from '../customers/pages/customerOrderDetails';
 
 function Router() {
   return (
@@ -15,7 +15,7 @@ function Router() {
       <Route exact path="/customer/products" element={ <CustomerProducts /> } />
       <Route exact path="/customer/checkout" element={ <CustomerCheckout /> } />
       <Route exact path="/customer/orders" element={ <CustomerOrders /> } />
-      <Route exact path="/teste" element={ <Teste /> } />
+      <Route exact path="/customer/orders/:id" element={ <CustomerOrderDetails /> } />
     </Routes>
   );
 }

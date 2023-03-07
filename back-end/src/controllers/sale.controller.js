@@ -9,15 +9,25 @@ const create = async (req, res, next) => {
   }
 };
 
-const updateSale = async (req, res, next) => {
-  const { body } = req;
+const getSaleById = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    await saleService.updateSale(body)
-    return res.status(204).send({ message: "was updated" });
+    const output = await saleService.getSaleById(id);
+    return res.status(200).json(output);
   } catch (error) {
     return next(error);
   }
-}
+};
+
+const updateSale = async (req, res, next) => {
+  const { body } = req;
+  try {
+    await saleService.updateSale(body);
+    return res.status(204).send({ message: 'was updated' });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 const getAllSalesByUser = async (req, res, next) => {
   try {
@@ -32,4 +42,5 @@ module.exports = {
   create,
   getAllSalesByUser,
   updateSale,
+  getSaleById,
 };
