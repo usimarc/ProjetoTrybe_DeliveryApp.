@@ -1,22 +1,12 @@
-// 06customer_order_details.test
-// Todos os testes desse arquivo:
-
-// Vão utilizar uma amostragem de produtos do banco de dados (impresso na tela durante o teste);
-// Vão fazer login com o cliente "Zé Birita";
-// Vão gerar um novo pedido com o preço total presumido e dados aleatórios para utilização nos testes (impresso na tela durante o teste);
-// Vão fazer o checkout desse novo pedido, o que deve redirecionar para tela de detalhes daquele pedido;
-// O endereço da página deve ser localhost:3000/customer/orders/<idVenda>.
 import React, { useEffect, useState } from 'react';
-// https://javascript.plainenglish.io/react-router-how-to-use-the-useparams-hook-321a6461732
 import { useParams } from 'react-router-dom';
 import { requestData } from '../../utils/apiConnection';
 import Navbar from '../components/navBar';
 
 function CustomerOrderDetails() {
-  const [cart, setCart] = useState();
-  console.log(cart);
-  const { id } = useParams();
-  const [date, setDate] = useState();
+  const [name, setName] = useState('');
+  const [product, setProducts] = useState({});
+  const { id } = useParams('');
   const items = [
     'Item',
     'Descrição',
@@ -24,85 +14,61 @@ function CustomerOrderDetails() {
     'Valor Unitário',
     'Sub-total',
   ];
-  const [totalPrice, setTotalPrice] = useState(0);
 
-  const setNameFunc = () => {
+  const correctDate = (e) => {
+    const entryDate = new Date(e);
+    const day = entryDate.getDate().toString().padStart(2, '0');
+    const month = (entryDate.getMonth() + 1).toString().padStart(2, '0');
+    const year = entryDate.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const getSaleById = async () => {
+    const data = await requestData(`/sales/${id}`);
+    setProducts(data);
+  };
+
+  const four = 4;
+  const correctId = (paraId) => paraId.toString().padStart(four, '0');
+
+  useEffect(() => {
+    getSaleById();
     const getName = JSON.parse(localStorage.getItem('user'));
     if (getName) {
       setName(getName.name);
     }
-  };
-
-  function correctDate(e) {
-    const entryDate = new Date(e);
-    const day = entryDate.getDate().toString().padStart(2, '0');
-    const month = (entryDate.getMonth() + 1).toString().padStart(2, '0');
-    const year = entryDate.getFullYear().toString().substring(2);
-    return `${day}/${month}/${year}`;
-  }
-
-  useEffect(() => {
-    const getSale = async () => {
-      const result = await requestData(`/sales/${id}`);
-      console.log(result);
-      const cartMAP = result.data.products.map(({ name, price, SaleProduct }) => ({
-        name, price, quantity: SaleProduct.quantity }));
-      setCart(cartMAP);
-      setTotalPrice(data.totalPrice);
-    //   // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate
-    //   // var today = new Date();
-    //   // var day = today.getUTCDate();
-    //   const day = new Date(data.saleDate).getUTCDate();
-    //   const month = new Date(data.saleDate).getUTCMonth();
-    //   const year = new Date(data.saleDate).getFullYear();
-    //   const noMagic = 9;
-    //   setDate(`${day}/${month + 1 < noMagic ? `0${month + 1}` : month + 1}/${year}`);
-    };
-    setDate(correctDate());
-    getSale();
-    setNameFunc();
   }, []);
-
-  //   useEffect(() => {
-  //     requestData('/sales')
-  //       .then((response) => {
-  //         setCart(response);
-  //       });
-
-  //     setNameFunc();
-  //   }, []);
 
   return (
     <div>
-      <Navbar />
+      <Navbar name={ name } />
       <h1>Detalhe do Pedido</h1>
       <h1
         data-testid="customer_order_details__element-order-details-label-order-id"
       >
         PEDIDO
         {' '}
-        { id }
+        { correctId(id) }
 
       </h1>
       <h1 data-testid="customer_order_details__element-order-details-label-seller-name">
-        tenho que pegar sellerName
+        { product.sellerName }
       </h1>
       <h1
         data-testid="customer_order_details__element-order-details-label-order-date"
       >
-        { date }
+        { correctDate(product.saleDate) }
       </h1>
       <h1
-        data-testid="customer_order_details__element-
-        order-details-label-delivery-status<index>"
+        data-testid="customer_order_details__element-order-details-label-delivery-status"
       >
-        ENTREGUE
+        { product.status }
       </h1>
 
       <button
         type="button"
         data-testid="customer_order_details__button-delivery-check"
-        disabled="true"
+        disabled
       >
         MARCAR COMO ENTREGUE
       </button>
@@ -115,44 +81,46 @@ function CustomerOrderDetails() {
           </tr>
         </thead>
         <tbody>
-          {cart.map((product) => (
-            <tr key={ index }>
+          {product.products && product.products.map((element, index) => (
+            <tr key={ element.id }>
               <th
                 data-testid={
-                  `customer_checkout__element-order-table-item-number-${index}`
+                  `customer_order_details__element-order-table-item-number-${index}`
                 }
               >
                 {index + 1}
               </th>
               <th
-                data-testid={ `customer_checkout__element-order-table-name-${index}` }
+                data-testid={
+                  `customer_order_details__element-order-table-name-${index}`
+                }
               >
-                {product.name}
+                {element.name}
 
               </th>
               <th
                 data-testid={
-                  `customer_checkout__element-order-table-quantity-${index}`
+                  `customer_order_details__element-order-table-quantity-${index}`
                 }
               >
-                {product.quantity}
+                {element.quantity}
 
               </th>
               <th
                 data-testid={
-                  `customer_checkout__element-order-table-unit-price-${index}`
+                  `customer_order_details__element-order-table-unit-price-${index}`
                 }
               >
-                {product.price.replace('.', ',')}
+                {element.price.replace('.', ',')}
 
               </th>
 
               <th
                 data-testid={
-                  `customer_checkout__element-order-table-sub-total-${index}`
+                  `customer_order_details__element-order-table-sub-total-${index}`
                 }
               >
-                {`${(product.price * product.quantity).toFixed(2)}`.replace('.', ',')}
+                {`${(element.price * element.quantity).toFixed(2)}`.replace('.', ',')}
 
               </th>
             </tr>
@@ -163,7 +131,7 @@ function CustomerOrderDetails() {
       <span
         data-testid="customer_order_details__element-order-total-price"
       >
-        {totalPrice.toFixed(2).replace('.', ',')}
+        {`${product.totalPrice}`.replace('.', ',')}
 
       </span>
     </div>

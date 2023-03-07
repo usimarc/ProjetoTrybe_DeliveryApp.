@@ -24,4 +24,10 @@ export const requestLogin = async (endpoint, body) => {
   const { data } = await apiConnection.post(endpoint, body);
   return data;
 };
+
+export const requestUpdate = async (endpoint, body) => {
+  const { data } = await apiConnection.patch(endpoint, body);
+  return data;
+};
+
 export default apiConnection;

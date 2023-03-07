@@ -29,6 +29,29 @@ const saveNewSale = async (userId, sale) => {
   }
 };
 
+const updateSale = async (sale) => {
+  try {
+    const { order: _, ...saleWithoutOrder } = sale;
+
+    const [numberOfAffectedRows] = await Sale.update(saleWithoutOrder, {
+      where: { id: sale.id },
+    });
+
+    const findSale = await Sale.findByPk(sale.id);
+    if (!findSale) {
+      throw new CustomError('NOT_FOUND', 'Sale was not found');
+    }
+    
+    if (numberOfAffectedRows === 0) {
+      throw new CustomError('BAD_REQUEST', 'Was not possible to Update');
+    }
+
+    return true;
+  } catch (error) {
+    throw new CustomError('BAD_REQUEST', error.message);
+  }
+};
+
 const mapProduct = (product) => ({
   id: product.id,
   name: product.name,
@@ -70,7 +93,30 @@ const getAllSalesByUser = async (userId) => {
   return objectMapping(sales);
 };
 
+const getSaleById = async (id) => {
+  const saleById = await Sale.findAll({
+    where: { id },
+    include: [
+      {
+        model: Product,
+        as: 'products',
+        through: { attributes: ['quantity'] },
+      },
+      {
+        model: User,
+        as: 'sellersSale',
+        attributes: { exclude: ['password'] },
+      },
+    ],
+  });
+  if (!saleById) throw new CustomError('NOT_FOUND', 'Sale not found');
+  const result = objectMapping(saleById);
+  return { ...result[0] };
+};
+
 module.exports = {
   saveNewSale,
   getAllSalesByUser,
+  updateSale,
+  getSaleById,
 };
