@@ -9,6 +9,16 @@ const create = async (req, res, next) => {
   }
 };
 
+const updateSale = async (req, res, next) => {
+  const { body } = req;
+  try {
+    await saleService.updateSale(body)
+    return res.status(204).send({ message: "was updated" });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 const getAllSalesByUser = async (req, res, next) => {
   try {
     const output = await saleService.getAllSalesByUser(req.user.id);
@@ -21,4 +31,5 @@ const getAllSalesByUser = async (req, res, next) => {
 module.exports = {
   create,
   getAllSalesByUser,
+  updateSale,
 };

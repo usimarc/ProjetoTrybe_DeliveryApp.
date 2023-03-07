@@ -29,6 +29,30 @@ const saveNewSale = async (userId, sale) => {
   }
 };
 
+const updateSale = async (sale) => {
+  try {
+    const { order: _, ...saleWithoutOrder } = sale;
+
+    const [numberOfAffectedRows] = await Sale.update(saleWithoutOrder, {
+      where: { id: sale.id },
+    });
+
+    const findSale = await Resource.findById(resourceId);
+    if (!findSale) {
+      throw new CustomError('NOT_FOUND', 'Sale was not found');
+    }
+    
+    if (numberOfAffectedRows === 0) {
+      throw new CustomError('BAD_REQUEST', 'Was not possible to Update');
+    }
+
+    return true;
+  } catch (error) {
+    throw new CustomError('BAD_REQUEST', error.message);
+  }
+};
+
+
 const mapProduct = (product) => ({
   id: product.id,
   name: product.name,
@@ -73,4 +97,5 @@ const getAllSalesByUser = async (userId) => {
 module.exports = {
   saveNewSale,
   getAllSalesByUser,
+  updateSale,
 };
