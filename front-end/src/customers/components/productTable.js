@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
 import PropTypes from 'prop-types';
 
 function ProductTable({ product, index, cart, setCart }) {
@@ -81,9 +80,9 @@ function ProductTable({ product, index, cart, setCart }) {
 }
 
 ProductTable.propTypes = {
-  product: PropTypes.object.isRequired,
+  product: PropTypes.shape.isRequired,
   index: PropTypes.number.isRequired,
-  cart: PropTypes.array.isRequired,
+  cart: PropTypes.shape.isRequired,
   setCart: PropTypes.func.isRequired,
 };
 
