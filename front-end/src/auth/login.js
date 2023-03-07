@@ -36,8 +36,13 @@ function Login() {
   };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
     setDisabled(!isValid(email, password));
-  }, [email, password]);
+
+    if (user) {
+      navigate('/customer/products');
+    }
+  }, [email, password, navigate]);
 
   return (
     <div>

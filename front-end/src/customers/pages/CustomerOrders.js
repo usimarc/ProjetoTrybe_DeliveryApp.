@@ -26,11 +26,10 @@ function CustomerOrders() {
   const correctId = (paraId) => paraId.toString().padStart(four, '0');
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await requestData('/sales');
-      setOrders(response);
-    }
-    fetchData();
+    requestData('/sales')
+      .then((response) => {
+        setOrders(response);
+      });
     setNameFunc();
   }, []);
 
