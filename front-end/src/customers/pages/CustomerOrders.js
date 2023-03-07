@@ -31,7 +31,7 @@ function CustomerOrders() {
         setOrders(response);
       });
     setNameFunc();
-  }, []);
+  }, [orders]);
 
   return (
     <div>

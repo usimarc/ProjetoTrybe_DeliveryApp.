@@ -37,7 +37,7 @@ const updateSale = async (sale) => {
       where: { id: sale.id },
     });
 
-    const findSale = await Resource.findById(resourceId);
+    const findSale = await Sale.findByPk(sale.id);
     if (!findSale) {
       throw new CustomError('NOT_FOUND', 'Sale was not found');
     }
