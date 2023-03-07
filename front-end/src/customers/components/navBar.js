@@ -33,6 +33,7 @@ function Navbar({ name }) {
         <button
           data-testid="customer_products__element-navbar-link-orders"
           type="button"
+          onClick={ (() => navigate('/customer/orders')) }
         >
           PEDIDOS
 
