@@ -9,11 +9,17 @@ function Login() {
   const [err, setErr] = useState('');
   const navigate = useNavigate();
 
+  const handlingPageRedirect = (role) => {
+    if (role === 'seller') return navigate('/seller/orders');
+
+    return navigate('/customer/products');
+  };
+
   const handleLogin = async () => {
     try {
       const response = await requestLogin('/login', { email, password });
       localStorage.setItem('user', JSON.stringify(response));
-      navigate('/customer/products');
+      return handlingPageRedirect(response.role);
     } catch (error) {
       setErr(error);
     }
