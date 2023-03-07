@@ -29,8 +29,6 @@ function CustomerOrders() {
     setNameFunc();
   }, []);
 
-  console.log(orders);
-
   return (
     <div>
       <Navbar name={ name } />
