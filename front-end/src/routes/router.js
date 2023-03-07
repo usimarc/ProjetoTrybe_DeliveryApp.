@@ -16,6 +16,8 @@ function Router() {
       <Route path="/customer/checkout" element={ <CustomerCheckout /> } />
       <Route path="/customer/sales" element={ <CustomerOrders /> } />
       <Route path="/customer/orders/:id" element={ <CustomerOrderDetails /> } />
+      <Route exact path="/customer/checkout" element={ <CustomerCheckout /> } />
+      <Route exact path="/customer/orders" element={ <CustomerOrders /> } />
     </Routes>
   );
 }

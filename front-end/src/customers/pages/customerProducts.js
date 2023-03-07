@@ -23,7 +23,6 @@ function CustomerProducts() {
     const getPrice = local
       .reduce((acc, curr) => acc + Number(curr.price) * Number(curr.quantity), 0);
     const result = `${getPrice.toFixed(2)}`.replace('.', ',');
-    localStorage.setItem('totalprice', result);
     setTotalPrice(result);
     if (Number(getPrice) > 0) setDisabledBtn(false);
   };
