@@ -13,7 +13,7 @@ function Router() {
       <Route exact path="/register" element={ <Register /> } />
       <Route exact path="/customer/products" element={ <CustomerProducts /> } />
       <Route path="/customer/checkout" element={ <CustomerCheckout /> } />
-      <Route path="/customer/sales" element={ <CustomerOrders /> } />
+      <Route path="/customer/orders" element={ <CustomerOrders /> } />
     </Routes>
   );
 }
