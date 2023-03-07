@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ProductTable from '../components/productTable';
 import Navbar from '../components/navBar';
@@ -8,10 +9,21 @@ function CustomerCheckout() {
   const [name, setName] = useState('usuario');
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [sellerName, setSellerName] = useState('Fulana Pereira');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [deliveryNumber, setDeliveryNumber] = useState('');
+  const [sellers, setSellers] = useState([]);
+  const [sellerId, setSellerId] = useState('');
   const navigate = useNavigate();
+
+  const getSellers = async () => {
+    const { data } = await axios.get('http://localhost:3001/sellers');
+    setSellers(data);
+    setSellerId(data[0].id);
+  };
+
+  useEffect(() => {
+    getSellers();
+  }, [setSellers]);
 
   function calculateTotalPrice(cart) {
     return cart.reduce(
@@ -36,10 +48,6 @@ function CustomerCheckout() {
     setTotalPrice(calculateTotalPrice(cartItems));
   }, [cartItems]);
 
-  function handleSellerNameChange({ target }) {
-    setSellerName(target.value);
-  }
-
   function handleDeliveryAddressChange({ target }) {
     setDeliveryAddress(target.value);
   }
@@ -53,7 +61,7 @@ function CustomerCheckout() {
       .map((item) => ({ productId: item.id, quantity: item.quantity }));
 
     requestLogin('/sales', {
-      sellerName,
+      sellerId,
       totalPrice,
       deliveryAddress,
       deliveryNumber,
@@ -90,10 +98,19 @@ function CustomerCheckout() {
       <div>
         P. Vendedora Responsável:
         <select
+          id="select-seller"
+          name="select-seller"
           data-testid="customer_checkout__select-seller"
-          onChange={ handleSellerNameChange }
+          onChange={ ({ target }) => setSellerId(Number(target.value)) }
         >
-          <option>Fulana Pereira</option>
+          {sellers.map((seller) => (
+            <option
+              key={ seller.id }
+              value={ seller.id }
+            >
+              {seller.name}
+            </option>
+          ))}
         </select>
 
         Endereço
