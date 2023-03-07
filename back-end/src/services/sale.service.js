@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const { Op } = require('sequelize');
 const { Sale, SaleProduct, Product, User } = require('../database/models');
 const CustomError = require('./error/CustomError');
 const config = require('../database/config/config');
@@ -49,21 +50,16 @@ const objectMapping = (sales) => sales.map((order) => ({
     products: order.products.map((product) => mapProduct(product)),
   }));
 
-const getAllSalesByUser = async (userId) => {
+const getAllSalesByUser = async (user) => {
   const sales = await Sale.findAll({
-    where: { userId },
+    where: { [Op.or]: [
+      { userId: user },
+      { sellerId: user },
+    ] },
     attributes: { exclude: ['userId', 'sellerId'] },
     include: [
-      {
-        model: Product,
-        as: 'products',
-        through: { attributes: ['quantity'] },
-      },
-      {
-        model: User,
-        as: 'sellersSale',
-        attributes: { exclude: ['password'] },
-      },
+      { model: Product, as: 'products', through: { attributes: ['quantity'] } },
+      { model: User, as: 'sellersSale', attributes: { exclude: ['password'] } },
     ],
   });
 
