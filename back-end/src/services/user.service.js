@@ -71,14 +71,18 @@ const register = async ({ name, email, password }) => {
 const getAllUsers = async () => {
   const allUsers = await User.findAll({
     attributes: { exclude: ['password'] },
+    where: {
+      role: { [Op.ne]: 'administrator' },
+    },
   });
 
   return allUsers;
 };
 
 const deleteUser = async (userId) => {
-    const userToDelete = await User.findByPk(userId);
-
+  const userToDelete = await User.findOne({
+    where: { id: userId },
+  });
     if (!userToDelete) {
       throw new CustomError('NOT_FOUND', 'User not found');
     }
