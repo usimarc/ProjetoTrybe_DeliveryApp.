@@ -1,8 +1,15 @@
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Navbar({ name }) {
+  const [currentRoute, setcurrentRoute] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const rotaAtual = window.location.pathname;
+    if (rotaAtual.includes('customer')) setcurrentRoute(true);
+  }, [currentRoute]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -12,19 +19,23 @@ function Navbar({ name }) {
   return (
     <div>
       <nav>
-        <button
-          data-testid="customer_products__element-navbar-link-products"
-          type="button"
-        >
-          PRODUTOS
+        {
+          currentRoute && (
+            <button
+              data-testid="customer_products__element-navbar-link-products"
+              type="button"
+            >
+              PRODUTOS
 
-        </button>
+            </button>
+          )
+        }
         <button
           data-testid="customer_products__element-navbar-link-orders"
           type="button"
           onClick={ (() => navigate('/customer/orders')) }
         >
-          MEUS PEDIDOS
+          PEDIDOS
 
         </button>
         <button
