@@ -7,6 +7,6 @@ const router = Router();
 router.get('/:id', validateToken, saleController.getSaleById);
 router.get('/', validateToken, saleController.getAllSalesByUser);
 router.post('/', validateToken, saleController.create);
-router.patch('/', validateToken, saleController.updateSale);
+router.patch('/:id', validateToken, saleController.updateSale);
 
 module.exports = router;
