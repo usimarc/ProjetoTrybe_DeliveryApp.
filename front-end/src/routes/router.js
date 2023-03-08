@@ -6,6 +6,7 @@ import CustomerCheckout from '../customers/pages/customerCheckout';
 import CustomerOrders from '../customers/pages/CustomerOrders';
 import SellerOrder from '../seller/pages/sellerOrder';
 import CustomerOrderDetails from '../customers/pages/customerOrderDetails';
+import AllUsersTable from '../components/allUsers';
 
 function Router() {
   return (
@@ -19,6 +20,7 @@ function Router() {
       <Route exact path="/customer/orders" element={ <CustomerOrders /> } />
       <Route exact path="/customer/orders/:id" element={ <CustomerOrderDetails /> } />
       <Route exact path="/seller/orders" element={ <SellerOrder /> } />
+      <Route exact path="/teste" element={ <AllUsersTable /> } />
     </Routes>
   );
 }
