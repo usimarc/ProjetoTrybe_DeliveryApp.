@@ -20,10 +20,9 @@ const getSaleById = async (req, res, next) => {
 };
 
 const updateSale = async (req, res, next) => {
-  const { body } = req;
   try {
-    await saleService.updateSale(body);
-    return res.status(204).send({ message: 'was updated' });
+    await saleService.updateSalesStatus(req.params.id, req.body);
+    return res.status(204).end();
   } catch (error) {
     return next(error);
   }

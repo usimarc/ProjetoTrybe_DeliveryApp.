@@ -25,8 +25,8 @@ export const requestLogin = async (endpoint, body) => {
   return data;
 };
 
-export const requestUpdate = async (endpoint, body) => {
-  const { data } = await apiConnection.patch(endpoint, body);
+export const requestUpdate = async (id, body) => {
+  const { data } = await apiConnection.patch(`/sales/${id}`, body);
   return data;
 };
 

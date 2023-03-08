@@ -1,65 +1,92 @@
-import React, { useState } from 'react';
-import { requestData } from '../../utils/apiConnection';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { requestData, requestUpdate } from '../../utils/apiConnection';
 import Navbar from '../../customers/components/navBar';
 
 function SellerDetails() {
-  const prefix = 'seller_order_details__';
-  const pref = 'seller_order_details__';
-
-  const [sales, setSales] = useState([]);
+  const [sale, setSale] = useState({});
   const [name, setName] = useState('');
+  const [isDisabledBtnPrepare, setIsDisabledBtnPrepare] = useState(true);
+  const [isDisabledBtnDelivery, setIsDisabledBtnDelivery] = useState(true);
+  const [orderStatus, setOrderStatus] = useState('');
+  const { id } = useParams('');
+  const prefix = 'seller_order_details__';
 
-  const setNameFunc = () => {
-    const getName = JSON.parse(localStorage.getItem('user'));
-    if (getName) {
-      setName(getName.name);
-    }
+  const handleStatus = (status) => {
+    setOrderStatus(status);
+  };
+
+  const getSaleById = async () => {
+    const data = await requestData(`/sales/${id}`);
+    setSale(data);
+    return handleStatus(data.status);
   };
 
   const correctDate = (date) => {
     const entryDate = new Date(date);
     const day = entryDate.getDate().toString().padStart(2, '0');
     const month = (entryDate.getMonth() + 1).toString().padStart(2, '0');
-    const year = entryDate.getFullYear().toString().substring(2);
+    const year = entryDate.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
   const four = 4;
-  const correctId = (paraId) => paraId.toString().padStart(four, '0');
+  const correctId = (paraId) => `${paraId}`.padStart(four, '0');
 
   useEffect(() => {
-    requestData('/sales')
-      .then((response) => {
-        setSales(response);
-      });
-    setNameFunc();
+    getSaleById();
+    const getName = JSON.parse(localStorage.getItem('user'));
+    if (getName) setName(getName.name);
   }, []);
+
+  useEffect(() => {
+    if (orderStatus === 'Pendente') {
+      setIsDisabledBtnPrepare(false);
+    } else {
+      setIsDisabledBtnPrepare(true);
+    }
+
+    if (orderStatus === 'Preparando') {
+      setIsDisabledBtnDelivery(false);
+    } else {
+      setIsDisabledBtnDelivery(true);
+    }
+  }, [orderStatus]);
+
+  const handleUpdateStatus = async (status) => {
+    await requestUpdate(id, { status });
+    handleStatus(status);
+  };
 
   return (
     <div>
       <Navbar name={ name } />
       <h1>Detalhes do Pedido</h1>
       <div data-testid={ `${prefix}element-order-details-label-order-id` }>
-        { correctId(sales.id) }
+        { correctId(sale.id) }
       </div>
       <div
         data-testid={ `${prefix}element-order-details-label-order-date` }
       >
-        { correctDate(sales.date) }
+        { correctDate(sale.saleDate) }
       </div>
       <div
         data-testid={ `${prefix}element-order-details-label-delivery-status` }
       >
-        { sales.status }
+        { orderStatus }
       </div>
       <button
         type="button"
+        disabled={ isDisabledBtnPrepare }
+        onClick={ () => handleUpdateStatus('Preparando') }
         data-testid={ `${prefix}button-preparing-check` }
       >
         PREPARAR PEDIDO
       </button>
       <button
         type="button"
+        disabled={ isDisabledBtnDelivery }
+        onClick={ () => handleUpdateStatus('Em Trânsito') }
         data-testid={ `${prefix}button-dispatch-check` }
       >
         SAIU PARA ENTREGA
@@ -75,44 +102,42 @@ function SellerDetails() {
           </tr>
         </thead>
         <tbody>
-          {
-            sales.map((sale) => (
-              <tr key={ sale.id }>
-                <td
-                  data-testid={ `${pref}element-order-table-item-number-${sale.id}` }
-                >
-                  { sale.id }
-                </td>
-                <td
-                  data-testid={ `${pref}element-order-table-name-${sale.id}` }
-                >
-                  { sale.name }
-                </td>
-                <td
-                  data-testid={ `${pref}element-order-table-quantity-${sale.id}` }
-                >
-                  { sale.quantity }
-                </td>
-                <td
-                  data-testid={ `${pref}element-order-table-unit-price-${sale.id}` }
-                >
-                  { sale.value }
-                </td>
-                <td
-                  data-testid={ `${pref}element-order-table-sub-total-${sale.id}` }
-                >
-                  { sale.total }
-                </td>
-              </tr>
-            ))
-          }
+          { sale.products && sale.products.map((item, index) => (
+            <tr key={ item.id }>
+              <td
+                data-testid={ `${prefix}element-order-table-item-number-${index}` }
+              >
+                { item.id }
+              </td>
+              <td
+                data-testid={ `${prefix}element-order-table-name-${index}` }
+              >
+                { item.name }
+              </td>
+              <td
+                data-testid={ `${prefix}element-order-table-quantity-${index}` }
+              >
+                { item.quantity }
+              </td>
+              <td
+                data-testid={ `${prefix}element-order-table-unit-price-${index}` }
+              >
+                { `R$ ${item.price.replace('.', ',')}` }
+              </td>
+              <td
+                data-testid={ `${prefix}element-order-table-sub-total-${index}` }
+              >
+                {`R$ ${(item.price * item.quantity).toFixed(2)}`.replace('.', ',')}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <footer>
         <p
-          data-testid="seller_order_details__element-order-total-price"
+          data-testid={ `${prefix}element-order-total-price` }
         >
-          { sales.totalPrice }
+          { `${sale.totalPrice}`.replace('.', ',') }
         </p>
       </footer>
     </div>
