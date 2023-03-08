@@ -32,7 +32,7 @@ const saveNewSale = async (userId, sale) => {
 
 const updateSalesStatus = async (id, body) => {
   await Sale.update(body, {
-    where: { id }
+    where: { id },
   });
 };
 
