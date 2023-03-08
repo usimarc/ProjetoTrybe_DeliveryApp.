@@ -37,7 +37,7 @@ function SellerDetails() {
     getSaleById();
     const getName = JSON.parse(localStorage.getItem('user'));
     if (getName) setName(getName.name);
-  }, []);
+  }, [sale]);
 
   useEffect(() => {
     if (orderStatus === 'Pendente') {

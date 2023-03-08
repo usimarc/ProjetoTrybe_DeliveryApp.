@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { requestData } from '../../utils/apiConnection';
+import { requestData, requestUpdate } from '../../utils/apiConnection';
 import Navbar from '../components/navBar';
 
 function CustomerOrderDetails() {
   const [name, setName] = useState('');
   const [product, setProducts] = useState({});
+  const [disabled, setDisabled] = useState(true);
   const { id } = useParams('');
   const items = [
     'Item',
@@ -23,21 +24,26 @@ function CustomerOrderDetails() {
     return `${day}/${month}/${year}`;
   };
 
-  const getSaleById = async () => {
-    const data = await requestData(`/sales/${id}`);
-    setProducts(data);
-  };
-
   const four = 4;
   const correctId = (paraId) => paraId.toString().padStart(four, '0');
 
   useEffect(() => {
-    getSaleById();
+    requestData(`/sales/${id}`)
+      .then((response) => {
+        setProducts(response);
+        if (response.status === 'Em Trânsito') {
+          setDisabled(false);
+        } else {
+          setDisabled(true);
+        }
+      });
     const getName = JSON.parse(localStorage.getItem('user'));
     if (getName) {
       setName(getName.name);
     }
-  }, []);
+  }, [product]);
+
+  console.log(product);
 
   return (
     <div>
@@ -68,7 +74,11 @@ function CustomerOrderDetails() {
       <button
         type="button"
         data-testid="customer_order_details__button-delivery-check"
-        disabled
+        onClick={ (() => requestUpdate(
+          id,
+          { status: 'Entregue' },
+        )) }
+        disabled={ disabled }
       >
         MARCAR COMO ENTREGUE
       </button>

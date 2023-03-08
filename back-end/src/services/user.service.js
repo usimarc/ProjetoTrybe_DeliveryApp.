@@ -68,7 +68,33 @@ const register = async ({ name, email, password }) => {
   return handleToken(userWithoutPassword);
 };
 
+const getAllUsers = async () => {
+  const allUsers = await User.findAll({
+    attributes: { exclude: ['password'] },
+    where: {
+      role: { [Op.ne]: 'administrator' },
+    },
+  });
+
+  return allUsers;
+};
+
+const deleteUser = async (userId) => {
+  const userToDelete = await User.findOne({
+    where: { id: userId },
+  });
+    if (!userToDelete) {
+      throw new CustomError('NOT_FOUND', 'User not found');
+    }
+
+    await userToDelete.destroy();
+
+    return { message: 'User deleted successfully' };
+};
+
 module.exports = {
   login,
   register,
+  getAllUsers,
+  deleteUser,
 };
