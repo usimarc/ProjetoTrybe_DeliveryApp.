@@ -18,7 +18,7 @@ function CustomerOrders() {
     const entryDate = new Date(date);
     const day = entryDate.getDate().toString().padStart(2, '0');
     const month = (entryDate.getMonth() + 1).toString().padStart(2, '0');
-    const year = entryDate.getFullYear().toString().substring(2);
+    const year = entryDate.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -48,7 +48,7 @@ function CustomerOrders() {
                 </h3>
               </div>
               <div>
-                <p data-testid={ `customer_products__element-order-status-${order.id}` }>
+                <p data-testid={ `customer_orders__element-delivery-status-${order.id}` }>
                   {' '}
                   {order.status}
                   {' '}
