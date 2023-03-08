@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     role: { 
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: 'customer',
     },
     email: { 
       type: DataTypes.STRING,
