@@ -1,21 +1,37 @@
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 function Navbar({ name }) {
-  const [currentRoute, setcurrentRoute] = useState(false);
-  const [currentRouteAdm, setcurrentRouteAdm] = useState(false);
+  const [currentRoute, setCurrentRoute] = useState(false);
+  const [currentRouteAdm, setCurrentRouteAdm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const rotaAtual = window.location.pathname;
-    if (rotaAtual.includes('customer')) setcurrentRoute(true);
-    if (rotaAtual.includes('admin')) setcurrentRouteAdm(true);
+    if (rotaAtual.includes('customer')) setCurrentRoute(true);
+    if (rotaAtual.includes('admin')) setCurrentRouteAdm(true);
   }, [currentRoute]);
 
   const handleLogout = () => {
     localStorage.clear();
     navigate('/login');
+  };
+
+  const handleProductsClick = () => {
+    if (currentRoute) {
+      navigate('/customer/products');
+    } else {
+      navigate('/seller/order');
+    }
+  };
+
+  const handleOrdersClick = () => {
+    if (currentRoute) {
+      navigate('/customer/orders');
+    } else {
+      navigate('/seller/orders');
+    }
   };
 
   return (
@@ -26,6 +42,7 @@ function Navbar({ name }) {
             <button
               data-testid="customer_products__element-navbar-link-products"
               type="button"
+              onClick={ handleProductsClick }
             >
               PRODUTOS
 
@@ -38,7 +55,7 @@ function Navbar({ name }) {
             <button
               data-testid="customer_products__element-navbar-link-orders"
               type="button"
-              onClick={ (() => navigate('/customer/orders')) }
+              onClick={ handleOrdersClick }
             >
               PEDIDOS
 
@@ -62,10 +79,7 @@ function Navbar({ name }) {
           data-testid="customer_products__element-navbar-user-full-name"
           type="button"
         >
-          {
-            name
-          }
-
+          {name}
         </button>
         <button
           data-testid="customer_products__element-navbar-link-logout"
@@ -73,7 +87,6 @@ function Navbar({ name }) {
           onClick={ handleLogout }
         >
           Sair
-
         </button>
       </nav>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { requestLogin } from '../../utils/apiConnection';
 import Navbar from '../../customers/components/navBar';
+import AllUsersTable from '../../components/allUsers';
 
 function AdminManageUsers() {
   const [err, setErr] = useState('');
@@ -112,6 +113,7 @@ function AdminManageUsers() {
           </button>
         </div>
       </fieldset>
+      <AllUsersTable />
     </div>
   );
 }
