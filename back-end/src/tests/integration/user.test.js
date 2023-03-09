@@ -3,7 +3,7 @@ const chai = require('chai');
 const chaiHtpp = require('chai-http');
 const app = require('../../api/app');
 const { User } = require('../../database/models');
-const userMock = require('../mocks/user.mock');
+const userMock = require('./mocks/user.mock');
 
 chai.use(chaiHtpp);
 
