@@ -3,7 +3,7 @@ const isAdmin = require('../services/validations/isAdmin');
 
 const createUser = async (req, res, next) => {
   try {
-    isAdmin(req.user.role);
+    isAdmin(req.header('Role'));
     const { token: _, ...userWithoutToken } = await userService.register(req.body);
     return res.status(201).json(userWithoutToken);
   } catch (error) {
@@ -22,6 +22,7 @@ const getAllUsers = async (_req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   const { id } = req.params;
+  isAdmin(req.header('Role'));
 
   try {
     const isDeleted = await userService.deleteUser(id);

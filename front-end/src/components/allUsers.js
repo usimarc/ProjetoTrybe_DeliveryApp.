@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { requestData, requestDelete } from '../utils/apiConnection';
 
-function AllUsersTable() {
-  const [allUsers, setAllUsers] = useState([]);
+function AllUsersTable({ allUsers }) {
+  const [allUsersTable, setAllUsersTable] = useState([]);
 
   const items = [
     'Item',
@@ -13,11 +14,22 @@ function AllUsersTable() {
   ];
 
   useEffect(() => {
-    requestData('/admin/users')
-      .then((response) => {
-        setAllUsers(response);
+    if (allUsers.length > 0) {
+      setAllUsersTable(allUsers);
+    } else {
+      requestData('/admin/users').then((response) => {
+        setAllUsersTable(response);
       });
+    }
   }, [allUsers]);
+
+  const handleDeleteUser = (id) => {
+    requestDelete(`/admin/users/${id}`)
+      .then(() => {
+        const newAllUsersTable = allUsersTable.filter((user) => user.id !== id);
+        setAllUsersTable(newAllUsersTable);
+      });
+  };
 
   return (
     <div>
@@ -35,7 +47,7 @@ function AllUsersTable() {
         </thead>
         <tbody>
           {
-            allUsers.map((element, index) => (
+            allUsersTable.map((element, index) => (
               <tr key={ index }>
                 <th
                   data-testid={
@@ -70,7 +82,7 @@ function AllUsersTable() {
                   data-testid={
                     `admin_manage__element-user-table-remove-${index}`
                   }
-                  onClick={ (() => requestDelete(`/admin/users/${element.id}`)) }
+                  onClick={ (() => handleDeleteUser(element.id)) }
                 >
                   Excluir
                 </button>
@@ -82,5 +94,16 @@ function AllUsersTable() {
     </div>
   );
 }
+
+AllUsersTable.propTypes = {
+  allUsers: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      email: PropTypes.string,
+      role: PropTypes.string,
+    }),
+  ),
+}.isRequired;
 
 export default AllUsersTable;

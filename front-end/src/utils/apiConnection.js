@@ -12,10 +12,7 @@ apiConnection.interceptors.request.use((config) => {
     const { token } = user;
 
     config.headers.Authorization = `${token}`;
-
-    if (user.role === 'administrator') {
-      config.headers.Admin = true;
-    }
+    config.headers.Role = `${user.role}`;
   }
 
   return config;
@@ -36,10 +33,7 @@ export const requestUpdate = async (id, body) => {
 };
 
 export const requestDelete = async (endpoint, id) => {
-  const config = {
-    headers: { Admin: true },
-  };
-  const { data } = await apiConnection.delete(endpoint, id, config);
+  const { data } = await apiConnection.delete(endpoint, id);
   return data;
 };
 

@@ -27,7 +27,7 @@ function Login() {
   };
 
   const isValid = (paraEmail, paraPassword) => {
-    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{3})$/i;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)(\.br)?$/i;
     const passwordRegex = /^.{6,}$/;
     const emailTest = emailRegex.test(paraEmail);
     const passwordTest = passwordRegex.test(paraPassword);
