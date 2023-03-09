@@ -43,8 +43,6 @@ function CustomerOrderDetails() {
     }
   }, [product]);
 
-  console.log(product);
-
   return (
     <div>
       <Navbar name={ name } />

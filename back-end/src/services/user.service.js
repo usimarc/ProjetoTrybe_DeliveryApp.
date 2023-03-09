@@ -45,7 +45,7 @@ const login = async ({ email, password }) => {
   return handleToken(userWithoutPassword);
 };
 
-const register = async ({ name, email, password }) => {
+const register = async ({ name, email, password, role }) => {
   validations.createUser(name, email, password);
 
   const hash = md5(password);
@@ -60,7 +60,7 @@ const register = async ({ name, email, password }) => {
     name,
     email,
     password: hash,
-    role: 'customer',
+    role,
   });
 
   const { password: _, ...userWithoutPassword } = newUser.dataValues;
@@ -80,14 +80,14 @@ const getAllUsers = async () => {
 };
 
 const deleteUser = async (userId) => {
-  const userToDelete = await User.findOne({
+  const userIsExists = await User.findOne({
     where: { id: userId },
   });
-    if (!userToDelete) {
+    if (!userIsExists) {
       throw new CustomError('NOT_FOUND', 'User not found');
     }
 
-    await userToDelete.destroy();
+    await userIsExists.destroy();
 
     return { message: 'User deleted successfully' };
 };

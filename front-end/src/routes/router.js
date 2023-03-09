@@ -8,6 +8,7 @@ import SellerOrder from '../seller/pages/sellerOrder';
 import CustomerOrderDetails from '../customers/pages/customerOrderDetails';
 import AllUsersTable from '../components/allUsers';
 import SellerDetails from '../seller/pages/SellerDetails';
+import AdminManageUsers from '../admin/pages/adminManageUsers';
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route exact path="/seller/orders" element={ <SellerOrder /> } />
       <Route exact path="/teste" element={ <AllUsersTable /> } />
       <Route exact path="/seller/orders/:id" element={ <SellerDetails /> } />
+      <Route exact path="/admin/manage" element={ <AdminManageUsers /> } />
     </Routes>
   );
 }

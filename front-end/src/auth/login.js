@@ -11,6 +11,7 @@ function Login() {
 
   const handlingPageRedirect = (role) => {
     if (role === 'seller') return navigate('/seller/orders');
+    if (role === 'administrator') return navigate('/admin/manage');
 
     return navigate('/customer/products');
   };

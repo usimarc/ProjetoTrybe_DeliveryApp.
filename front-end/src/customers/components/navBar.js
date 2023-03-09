@@ -3,17 +3,15 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 function Navbar({ name }) {
-  const [currentRoute, setCurrentRoute] = useState('');
+  const [currentRoute, setCurrentRoute] = useState(false);
+  const [currentRouteAdm, setCurrentRouteAdm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const currentPath = window.location.pathname;
-    if (currentPath.includes('customer')) {
-      setCurrentRoute('customer');
-    } else if (currentPath.includes('seller')) {
-      setCurrentRoute('seller');
-    }
-  }, []);
+    const rotaAtual = window.location.pathname;
+    if (rotaAtual.includes('customer')) setCurrentRoute(true);
+    if (rotaAtual.includes('admin')) setCurrentRouteAdm(true);
+  }, [currentRoute]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -21,17 +19,17 @@ function Navbar({ name }) {
   };
 
   const handleProductsClick = () => {
-    if (currentRoute === 'customer') {
-      navigate('/customer/order');
-    } else if (currentRoute === 'seller') {
+    if (currentRoute) {
+      navigate('/customer/products');
+    } else {
       navigate('/seller/order');
     }
   };
 
   const handleOrdersClick = () => {
-    if (currentRoute === 'customer') {
+    if (currentRoute) {
       navigate('/customer/orders');
-    } else if (currentRoute === 'seller') {
+    } else {
       navigate('/seller/orders');
     }
   };
@@ -39,22 +37,44 @@ function Navbar({ name }) {
   return (
     <div>
       <nav>
-        {currentRoute === 'customer' && (
-          <button
-            data-testid="customer_products__element-navbar-link-products"
-            type="button"
-            onClick={ handleProductsClick }
-          >
-            PRODUTOS
-          </button>
-        )}
-        <button
-          data-testid="customer_products__element-navbar-link-orders"
-          type="button"
-          onClick={ handleOrdersClick }
-        >
-          PEDIDOS
-        </button>
+        {
+          currentRoute && (
+            <button
+              data-testid="customer_products__element-navbar-link-products"
+              type="button"
+              onClick={ handleProductsClick }
+            >
+              PRODUTOS
+
+            </button>
+          )
+        }
+
+        {
+          !currentRouteAdm && (
+            <button
+              data-testid="customer_products__element-navbar-link-orders"
+              type="button"
+              onClick={ handleOrdersClick }
+            >
+              PEDIDOS
+
+            </button>
+          )
+        }
+
+        {
+          currentRouteAdm && (
+            <button
+              data-testid="customer_products__element-navbar-link-orders"
+              type="button"
+            >
+              GERENCIAR USUÁRIOS
+
+            </button>
+          )
+        }
+
         <button
           data-testid="customer_products__element-navbar-user-full-name"
           type="button"

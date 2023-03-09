@@ -13,13 +13,11 @@ function AllUsersTable() {
   ];
 
   useEffect(() => {
-    requestData('/users')
+    requestData('/admin/users')
       .then((response) => {
         setAllUsers(response);
       });
   }, [allUsers]);
-
-  console.log(allUsers);
 
   return (
     <div>
@@ -70,9 +68,9 @@ function AllUsersTable() {
                 <button
                   type="button"
                   data-testid={
-                    `admin_manage__element-user-table-email-${index}`
+                    `admin_manage__element-user-table-remove-${index}`
                   }
-                  onClick={ (() => requestDelete(`/users/${element.id}`)) }
+                  onClick={ (() => requestDelete(`/admin/users/${element.id}`)) }
                 >
                   Excluir
                 </button>
