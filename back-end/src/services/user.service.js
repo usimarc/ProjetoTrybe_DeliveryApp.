@@ -80,14 +80,14 @@ const getAllUsers = async () => {
 };
 
 const deleteUser = async (userId) => {
-  const userToDelete = await User.findOne({
+  const userIsExists = await User.findOne({
     where: { id: userId },
   });
-    if (!userToDelete) {
+    if (!userIsExists) {
       throw new CustomError('NOT_FOUND', 'User not found');
     }
 
-    await userToDelete.destroy();
+    await userIsExists.destroy();
 
     return { message: 'User deleted successfully' };
 };

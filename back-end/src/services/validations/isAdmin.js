@@ -1,4 +1,4 @@
-const CustomError = require("../error/CustomError");
+const CustomError = require('../error/CustomError');
 
 const isAdmin = (role) => {
   if (role !== 'administrator') {
