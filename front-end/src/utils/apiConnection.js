@@ -12,7 +12,6 @@ apiConnection.interceptors.request.use((config) => {
     const { token } = user;
 
     config.headers.Authorization = `${token}`;
-    config.headers.Role = `${user.role}`;
   }
 
   return config;
