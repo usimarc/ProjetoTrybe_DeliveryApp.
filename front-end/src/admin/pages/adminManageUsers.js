@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { requestLogin } from '../../utils/apiConnection';
+import { requestData, requestLogin } from '../../utils/apiConnection';
 import Navbar from '../../customers/components/navBar';
 import AllUsersTable from '../../components/allUsers';
 
@@ -15,6 +15,7 @@ function AdminManageUsers() {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isNameValid, setIsNameValid] = useState(false);
   const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
   const handleBtnOnClick = async () => {
     try {
@@ -22,13 +23,19 @@ function AdminManageUsers() {
         name, email, password, role,
       });
       setUsers([...users, newUser]);
+      setName('');
+      setEmail('');
+      setPassword('');
+      setRole('seller');
+      const response = await requestData('/admin/users');
+      setAllUsers(response);
     } catch (error) {
       setErr(error);
     }
   };
 
   useEffect(() => {
-    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{3})$/i;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)(\.br)?$/i;
     const passwordRegex = /^.{6,}$/;
     const twelve = 12;
     const nameRegex = name.length >= twelve;
@@ -113,7 +120,7 @@ function AdminManageUsers() {
           </button>
         </div>
       </fieldset>
-      <AllUsersTable />
+      <AllUsersTable allUsers={ allUsers } />
     </div>
   );
 }
