@@ -36,7 +36,7 @@ const login = async ({ email, password }) => {
 
   const hash = md5(password);
 
-  if (!user || user.password !== hash) {
+  if (!user || user.dataValues.password !== hash) {
     throw new CustomError('NOT_FOUND', 'Invalid email or password');
   }
 
