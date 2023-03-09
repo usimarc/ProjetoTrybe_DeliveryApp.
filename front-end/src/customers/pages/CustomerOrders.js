@@ -28,7 +28,9 @@ function CustomerOrders() {
   useEffect(() => {
     requestData('/sales')
       .then((response) => {
-        setOrders(response);
+        if (response !== orders) {
+          setOrders(response);
+        }
       });
     setNameFunc();
   }, [orders]);

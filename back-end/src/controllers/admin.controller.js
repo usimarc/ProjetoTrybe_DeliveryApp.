@@ -23,6 +23,7 @@ const getAllUsers = async (_req, res, next) => {
 const deleteUser = async (req, res, next) => {
   const { id } = req.params;
 
+  isAdmin(req.user.role);
   try {
     const isDeleted = await userService.deleteUser(id);
     return res.status(200).send(isDeleted);
