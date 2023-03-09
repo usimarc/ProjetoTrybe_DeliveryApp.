@@ -83,13 +83,14 @@ const deleteUser = async (userId) => {
   const userIsExists = await User.findOne({
     where: { id: userId },
   });
-    if (!userIsExists) {
-      throw new CustomError('NOT_FOUND', 'User not found');
-    }
 
-    await userIsExists.destroy();
+  if (!userIsExists) {
+    throw new CustomError('NOT_FOUND', 'User not found');
+  }
 
-    return { message: 'User deleted successfully' };
+  await User.destroy({ where: { id: userId } });
+
+  return { message: 'User deleted successfully' };
 };
 
 module.exports = {
