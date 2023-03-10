@@ -36,7 +36,7 @@ const login = async ({ email, password }) => {
 
   const hash = md5(password);
 
-  if (!user || user.password !== hash) {
+  if (!user || user.dataValues.password !== hash) {
     throw new CustomError('NOT_FOUND', 'Invalid email or password');
   }
 
@@ -83,13 +83,14 @@ const deleteUser = async (userId) => {
   const userIsExists = await User.findOne({
     where: { id: userId },
   });
-    if (!userIsExists) {
-      throw new CustomError('NOT_FOUND', 'User not found');
-    }
 
-    await userIsExists.destroy();
+  if (!userIsExists) {
+    throw new CustomError('NOT_FOUND', 'User not found');
+  }
 
-    return { message: 'User deleted successfully' };
+  await User.destroy({ where: { id: userId } });
+
+  return { message: 'User deleted successfully' };
 };
 
 module.exports = {
